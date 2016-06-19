@@ -1,13 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import {Items} from '../api/items.js';
 import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 
 export class PizzaItem extends Component{
     deleteItem(){
-        console.log(this.props.currentGroupId);
-
         Groups.update(
             {_id:this.props.currentGroupId},
             {$pull: {items: {_id:this.props.item._id}}},

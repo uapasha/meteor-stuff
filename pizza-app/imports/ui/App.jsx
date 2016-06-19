@@ -7,17 +7,33 @@ import {Groups} from '../api/groups.js'
 import Group from './Group.jsx';
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            hideEmpty: false,
+        };
+    }
+
     renderGroups() {
-        return this.props.groups.map((group) => (
+        let filteredGroups = this.props.groups;
+
+        if(this.state.hideEmpty){
+            filteredGroups = filteredGroups.filter(group => !!group.items && group.items.length > 0);
+        }
+
+        return filteredGroups.map((group) => (
             <Group
                 key={group._id}
-                // name={group.name}
-                // imgSource={group.img}
-                // items={group.items}
-                // people={group.people}
                 group={group}
             />
         ));
+    }
+
+    toggleHideEmpty(){
+        this.setState({
+            hideEmpty: !this.state.hideEmpty,
+        });
     }
 
     handleSubmit(event){
@@ -40,6 +56,14 @@ class App extends Component {
             <div className="container">
                 <header>
                     <h1>Pizza App</h1>
+                    <label>
+                    <input
+                        type="checkbox"
+                        readonly
+                        checked={this.state.hideEmpty}
+                        onClick={this.toggleHideEmpty.bind(this)}/>
+                        Hide empty groups
+                    </label>
                 </header>
 
                 <fieldset>
@@ -56,9 +80,9 @@ class App extends Component {
                 </form>
                 </fieldset>
 
-                <ul>
+                <section className="groupList">
                     {this.renderGroups()}
-                </ul>
+                </section>
             </div>
 
         )

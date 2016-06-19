@@ -1,1 +1,19 @@
 /* CSS declarations go here */
+#render-main{
+    max-width:700px;
+    margin: auto;
+}
+
+.groupList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.group-information {
+    flex: 1;
+    margin: 10px;
+    padding: 10px;
+
+    border: 1px solid darkseagreen;
+    border-radius: 10px;
+}

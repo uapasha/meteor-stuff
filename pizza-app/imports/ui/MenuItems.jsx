@@ -18,7 +18,7 @@ class MenuItems extends Component {
                     name="pizza"
                     ref="selectedPizza">
                     {this.props.items.map((item) => {
-                            return <option value={item._id}>{item.name}</option>
+                            return <option key={item._id} value={item._id}>{item.name}</option>
                         }
                     )}
                 </select>
@@ -40,10 +40,10 @@ class MenuItems extends Component {
 
 
     render() {
-        if (this.props.groupItems.length > 0) {
+        if (this.props.groupItems && this.props.groupItems.length > 0) {
             return <div className='ItemsBox'>
                 {this.props.groupItems.map((item)=> {
-                        return <PizzaItem item={item} currentGroupId={this.props.currentGroupId}/>
+                        return <PizzaItem key={item._id} item={item} currentGroupId={this.props.currentGroupId}/>
                     }
                 )}
 
