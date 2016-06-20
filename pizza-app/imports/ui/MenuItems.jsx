@@ -13,7 +13,7 @@ class MenuItems extends Component {
             <fieldset>
                 <legend>Add item</legend>
                 <form
-                    onSubmit={this.handleSubmit.bind(this)}>
+                    onSubmit={this.addItem.bind(this)}>
                 <select
                     name="pizza"
                     ref="selectedPizza">
@@ -29,11 +29,44 @@ class MenuItems extends Component {
         )
     }
 
-    handleSubmit(event){
+    createNewItem(){
+        return<fieldset>
+            <legend>Create new Item</legend>
+                <form onSubmit={this.insertItem.bind(this)}>
+                    <input
+                        type="text"
+                        ref="newItemName"
+                        required
+                        placeholder="Enter new pizza name"/>
+                    <input
+                        type='number'
+                        ref="newItemPrice"
+                        required
+                        min="50.0" 
+                        max="500.0"
+                        step="0.01"
+                        placeholder="0.0"/>
+                    <input type="submit" value="Create new pizza"/>
+
+                </form>
+
+        </fieldset>
+    }
+
+    insertItem(event){
+        event.preventDefault();
+        const name = ReactDOM.findDOMNode(this.refs.newItemName).value.trim();
+        const price = parseInt(ReactDOM.findDOMNode(this.refs.newItemPrice).value.trim());
+        Items.insert({name:name, price:price});
+        ReactDOM.findDOMNode(this.refs.newItemPrice).value = '';
+        ReactDOM.findDOMNode(this.refs.newItemName).value = '';
+
+    }
+
+    addItem(event){
         event.preventDefault();
         const newPizzaItemId = ReactDOM.findDOMNode(this.refs.selectedPizza).value.trim();
         const newItem = Items.findOne({_id:newPizzaItemId});
-        console.log(newItem);
         Groups.update({_id:this.props.currentGroupId}, {$addToSet: {items: newItem}});
 
     }
@@ -52,6 +85,7 @@ class MenuItems extends Component {
                         (item.price + sum), 0)}
                 </h1>
                 <div>{this.addNewItem()}</div>
+                {this.createNewItem()}
 
             </div>
         } else{
@@ -64,11 +98,11 @@ class MenuItems extends Component {
 }
 
 MenuItems.propTypes = {
-    items: PropTypes.array.isRequired,
+    items: PropTypes.array.isRequired
 };
 
 export default createContainer(() => {
         return {
-            items: Items.find().fetch(),
+            items: Items.find().fetch()
         }
     }, MenuItems);

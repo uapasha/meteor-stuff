@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
 
-
+import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 import {Groups} from '../api/groups.js'
 
 class App extends Component {
@@ -24,7 +24,7 @@ class App extends Component {
         }
 
         return filteredGroups.map((group) => (
-            <div className="group-information">
+            <div key={'main' + group._id} className="group-information">
                 <img src={group.img} alt={group.name + ' logo'}/>
                 <p>{group.name}</p>
                 <p><a href={FlowRouter.path('singleGroup', {id:group._id})}>See group</a></p>
@@ -61,6 +61,7 @@ class App extends Component {
             <div className="container">
                 <header>
                     <h1>Pizza App</h1>
+                    <AccountsUIWrapper />
                     <label>
                     <input
                         type="checkbox"
