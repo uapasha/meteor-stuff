@@ -7,7 +7,7 @@ import  App from '../ui/App.jsx';
 
 import Group from '../ui/Group.jsx';
 import Users from '../ui/Users.jsx';
-import CreateEvent from '../ui/CreateEvent.jsx';
+import CreateEventContainer from '../ui/CreateEvent.jsx';
 
 FlowRouter.route('/',{
     name:'home',
@@ -30,10 +30,10 @@ FlowRouter.route('/users', {
     }
 });
 
-FlowRouter.route('/events/create', {
+FlowRouter.route('/events/create/:id', {
     name: 'createEvent',
-    action(){
-        mount(CreateEvent)
+    action(params){
+        mount(CreateEventContainer, {id:params.id})
     }
 })
 

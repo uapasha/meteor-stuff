@@ -65,6 +65,7 @@ class Group extends Component {
                     Remove Group
                     &times;
                 </button>
+                <a href={FlowRouter.path('createEvent', {id:FlowRouter.getParam("id")})}>Create Event</a>
 
             </div>
         );
