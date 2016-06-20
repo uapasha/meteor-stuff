@@ -2,9 +2,9 @@ import  React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import {Groups} from '../api/groups.js'
 
-import Group from './Group.jsx';
+
+import {Groups} from '../api/groups.js'
 
 class App extends Component {
     constructor(props) {
@@ -15,6 +15,7 @@ class App extends Component {
         };
     }
 
+
     renderGroups() {
         let filteredGroups = this.props.groups;
 
@@ -23,10 +24,11 @@ class App extends Component {
         }
 
         return filteredGroups.map((group) => (
-            <Group
-                key={group._id}
-                group={group}
-            />
+            <div className="group-information">
+                <img src={group.img} alt={group.name + ' logo'}/>
+                <p>{group.name}</p>
+                <p><a href={FlowRouter.path('singleGroup', {id:group._id})}>See group</a></p>
+            </div>
         ));
     }
 
@@ -41,11 +43,14 @@ class App extends Component {
 
         const groupName = ReactDOM.findDOMNode(this.refs.textInput)
                                 .value
-                                .trim()
+                                .trim();
+
+        const imgUrl = ReactDOM.findDOMNode(this.refs.imageUrl).value.trim();
 
         Groups.insert({
             name:groupName,
-            createdAt: new Date()
+            createdAt: new Date(),
+            img: imgUrl,
         });
 
         ReactDOM.findDOMNode(this.refs.textInput).value = '';
@@ -68,16 +73,21 @@ class App extends Component {
 
                 <fieldset>
                     <legend>Create a new Group</legend>
-                <form
-                    className="add-group"
-                    onSubmit={this.handleSubmit.bind(this)}>
-                    <input
-                        type="text"
-                        ref="textInput"
-                        placeholder="Enter Group Name"/>
-                    <input
-                        type="submit" value="Add new Group"/>
-                </form>
+                    <form
+                        className="add-group"
+                        onSubmit={this.handleSubmit.bind(this)}>
+                        <input
+                            type="text"
+                            ref="textInput"
+                            required
+                            placeholder="Enter Group Name"/>
+                        <input
+                            type="text"
+                            ref="imageUrl"
+                            placeholder="Enter logo url"/>
+                        <input
+                            type="submit" value="Add new Group"/>
+                    </form>
                 </fieldset>
 
                 <section className="groupList">

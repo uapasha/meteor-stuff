@@ -1,11 +1,14 @@
 import React, { Component, PropTypes} from 'react';
 import MenuItems from './MenuItems.jsx';
 import {Groups} from '../api/groups.js';
+import { createContainer } from 'meteor/react-meteor-data';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 
-export default class Group extends Component {
+class Group extends Component {
     deleteGroup(){
         Groups.remove({_id:this.props.group._id});
+        FlowRouter.go('home');
     }
 
     render(){
@@ -26,3 +29,10 @@ export default class Group extends Component {
 Group.propTypes = {
     group: PropTypes.object.isRequired,
 };
+
+export default createContainer(() => {
+    const id = FlowRouter.getParam("id");
+    return {
+        group: Groups.find({'_id':id}).fetch()[0],
+    };
+}, Group);

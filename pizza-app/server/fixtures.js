@@ -1,6 +1,16 @@
 import {Groups } from '../imports/api/groups.js';
 import {Items} from '../imports/api/items.js';
 
+if (!Meteor.users.find().count()){
+    let tomId = Meteor.users.insert({
+        profile: { name: 'Tom Coleman' }
+    });
+    let sachaId = Meteor.users.insert({
+        profile: { name: 'Sacha Greif' }
+    });
+
+}
+
 let groupsData = [
     {name:'QA', img: '/Quality-Assurance.jpg', createdAt: new Date()},
     {name: 'Web-developers', img: '/web-developer.jpg', createdAt: new Date()-1000},
