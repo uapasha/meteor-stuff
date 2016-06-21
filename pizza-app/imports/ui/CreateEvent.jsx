@@ -11,10 +11,11 @@ import {EventDays} from '../api/eventdays.js'
 
 class CreateEvent extends Component {
     renderItems(){
-        if (this.props.group.items.length > 0) {
+        console.log('some: ' + this.props.group.items);
+        if (this.props.items.length > 0) {
             return <div class="eventMenu">
                 <div><h1>Selected Items</h1></div>
-                {this.state.currentItems.map((item) => {
+                {this.props.items.map((item) => {
                         return <div key={'selectItem_' + item._id}>
                             <h2>Pizza: {item.name}</h2>
                             <p>Price: {item.price}</p>
@@ -49,15 +50,16 @@ class CreateEvent extends Component {
 }
 
 CreateEvent.propTypes = {
-    group: PropTypes.object.isRequired,
+    group: PropTypes.object,
+    items: PropTypes.array
 };
 
 export default CreateEventContainer = createContainer(() => {
     const id = FlowRouter.getParam("id");
-    console.log(id);
-    const group = Groups.find({_id:id}).fetch()[0];
-    console.log(Groups.find({_id:id}).fetch()[0]);
+    const group = Groups.find({'_id':id}).fetch()[0];
+    let groupNow = !!group ? group : {};
     return {
-        group: group,
+        group: !!group ? group : {},
+        items: !!groupNow.items ? groupNow.items : []
     };
 }, CreateEvent);

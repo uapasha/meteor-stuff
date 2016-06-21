@@ -73,15 +73,18 @@ class Group extends Component {
 }
 
 Group.propTypes = {
-    group: PropTypes.object.isRequired,
-    users: PropTypes.array.isRequired
+    group: PropTypes.object,
+    users: PropTypes.array
 };
 
 export default createContainer(() => {
     const id = FlowRouter.getParam("id");
     console.log('!!!   id: ' + id);
+    const group = Groups.find({'_id':id}).fetch()[0];
+    const users = Meteor.users.find().fetch();
+
     return {
-        group: Groups.find({'_id':id}).fetch()[0],
-        users: Meteor.users.find().fetch()
+        group: !!group ? group : {},
+        users: !!users ? users : []
     };
 }, Group);

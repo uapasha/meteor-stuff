@@ -68,7 +68,7 @@ class CreateGroup extends Component {
 }
 
 CreateGroup.propTypes = {
-    items: PropTypes.array.isRequired,
+    items: PropTypes.array,
 };
 
 export default createContainer(() => {
