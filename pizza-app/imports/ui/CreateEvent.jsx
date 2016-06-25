@@ -10,8 +10,17 @@ import {EventDays} from '../api/eventdays.js'
 
 
 class CreateEvent extends Component {
+    // constructor(props) {
+    //     super(props);
+    //     if (this.props.items.length > 0) {
+    //         this.props.items.map((item) => {
+    //             this.state{item._id: 0}
+    //         })
+    //     } else {
+    //         this.state.
+    //     }
+    // }
     renderItems(){
-        console.log('some: ' + this.props.group.items);
         if (this.props.items.length > 0) {
             return <div class="eventMenu">
                 <div><h1>Selected Items</h1></div>
@@ -20,9 +29,10 @@ class CreateEvent extends Component {
                             <h2>Pizza: {item.name}</h2>
                             <p>Price: {item.price}</p>
                             1<input type="range" name="pizzaAmount"
-                                   min="0" max="5" value="1" key={"pizzaAmount_" + item._id}
-                                   onchange={this.handleAmountChanged.bind(this)}/>5
-                            <p>TotalSum: {item.amount*item.price}</p>
+                                   min="0" max="5" defaultValue="1"
+                                    key={"pizzaAmount_" + item._id}
+                                   />5
+                            <p>Total Sum of {item.name}: {1*item.price}</p>
                         </div>
                     }
                 )}
@@ -32,19 +42,46 @@ class CreateEvent extends Component {
         }
     }
 
-    handleAmountChanged(event){
+
+
+    // handleAmountChanged(event){
+    //     event.preventDefault();
+    //     console.log(event.value);
+    // }
+    getDefaultDate(){
+            const now = new Date();
+            const day = ("0" + now.getDate()).slice(-2);
+            const month = ("0" + (now.getMonth() + 1)).slice(-2);
+            return now.getFullYear()+"-"+(month)+"-"+(day) ;
+    }
+    getDefaultTime(){
+        const time = (new Date()).toTimeString().split(' ')[0].substring(0,5)
+        console.log(time);
+        return time
+    }
+
+    handleSubmit(event){
         event.preventDefault();
-        console.log(event.value);
+        const eventDate = ReactDOM.findDOMNode(this.refs.eventDate).value.trim();
+        console.log(eventDate);
     }
 
     render() {
         return <div>
             <h1>Create Event</h1>
-        <fieldset>
-            <input ref="selectDate" type="date"/>
-            {this.renderItems()}
-            
-        </fieldset>
+            <form onSubmit={this.handleSubmit.bind(this)}>
+                <fieldset>
+                    <label for="selectDate">Select Event Date
+                        <input ref="eventDate" type="date" defaultValue={this.getDefaultDate()} name="selectDate"/>
+                    </label>
+                    <label for="selectTime">Select Event Time
+                        <input ref="eventTime" type="time" defaultValue={this.getDefaultTime()} name="selectDate"
+                        step ='300.0'/>
+                    </label>
+                    {this.renderItems()}
+                    <input type="submit" value ='Create Event'/>
+                </fieldset>
+            </form>
             </div>
     }
 }
