@@ -6,7 +6,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import {Meteor} from 'meteor/meteor'
 import ReactDOM from 'react-dom';
 import Users from './Users.jsx'
-import Event from './Event.jsx'
+import {Event} from './Event.jsx'
 import {Events} from '../api/events.js';
 
 
@@ -23,7 +23,14 @@ class Group extends Component {
     renderEvents(){
         return <div>
             <h1>Events: </h1>
-            {console.log(Events.find({}).fetch())}
+            {this.props.events.map((event) => {
+                if(!!event){
+
+                    return <Event event={event} key={'event_' + event._id}/>
+                } else {
+                    <p>Event is not available</p>
+                }
+            })}
 
         </div>
     }
@@ -84,7 +91,8 @@ class Group extends Component {
 
 Group.propTypes = {
     group: PropTypes.object,
-    users: PropTypes.array
+    users: PropTypes.array,
+    events: PropTypes.array
 };
 
 export default createContainer(() => {
@@ -98,9 +106,9 @@ export default createContainer(() => {
         var userIds = [];
     }
     const users = Meteor.users.find({_id:{$nin: userIds}}).fetch();
-
     return {
         group: !!group ? group : {},
-        users: !!users ? users : []
+        users: !!users ? users : [],
+        events: !!group ? Events.find({'group.id':group._id}).fetch() : []
     };
 }, Group);
