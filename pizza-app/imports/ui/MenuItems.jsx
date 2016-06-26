@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {Items} from '../api/items.js';
-import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import {PizzaItem} from './PizzaItem.jsx'
+import {Meteor} from 'meteor/meteor';
 
 class MenuItems extends Component {
 
@@ -57,7 +57,7 @@ class MenuItems extends Component {
         event.preventDefault();
         const name = ReactDOM.findDOMNode(this.refs.newItemName).value.trim();
         const price = parseInt(ReactDOM.findDOMNode(this.refs.newItemPrice).value.trim());
-        Items.insert({name:name, price:price});
+        Meteor.call('items.create', name, price);
         ReactDOM.findDOMNode(this.refs.newItemPrice).value = '';
         ReactDOM.findDOMNode(this.refs.newItemName).value = '';
 
@@ -67,8 +67,7 @@ class MenuItems extends Component {
         event.preventDefault();
         const newPizzaItemId = ReactDOM.findDOMNode(this.refs.selectedPizza).value.trim();
         const newItem = Items.findOne({_id:newPizzaItemId});
-        Groups.update({_id:this.props.currentGroupId}, {$addToSet: {items: newItem}});
-
+        Meteor.call('groups.addItem', this.props.currentGroupId, newItem);
     }
 
 

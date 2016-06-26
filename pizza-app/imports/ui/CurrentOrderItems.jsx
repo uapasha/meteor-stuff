@@ -2,7 +2,7 @@ import  React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import {EventDays} from '../api/eventdays.js'
+import {EventDays} from '../api/events.js'
 import {Groups} from '../api/groups.js'
 import {CurrentOrder} from '../../client/localItems.js';
 

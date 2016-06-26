@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
+import {Meteor} from 'meteor/meteor';
 
 export class PizzaItem extends Component{
     deleteItem(){
-        Groups.update(
-            {_id:this.props.currentGroupId},
-            {$pull: {items: {_id:this.props.item._id}}},
-        );
+        console.log(this.props.item._id);
+        Meteor.call('groups.deleteItem', this.props.currentGroupId, this.props.item._id);
     }
 
     render(){

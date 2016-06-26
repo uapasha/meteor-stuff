@@ -6,16 +6,26 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import {Meteor} from 'meteor/meteor'
 import ReactDOM from 'react-dom';
 import Users from './Users.jsx'
+import Event from './Event.jsx'
+import {Events} from '../api/events.js';
 
 
 class Group extends Component {
     deleteGroup(){
-        Groups.remove({_id:this.props.group._id});
+        Meteor.call('groups.deleteGroup', this.props.group._id);
         FlowRouter.go('home');
     }
 
     getUsers(){
         return <Users users={this.props.group.users}/>
+    }
+
+    renderEvents(){
+        return <div>
+            <h1>Events: </h1>
+            {console.log(Events.find({}).fetch())}
+
+        </div>
     }
 
     addUser(){
@@ -29,7 +39,7 @@ class Group extends Component {
                             name="user"
                             ref="selectedUser">
                             {this.props.users.map((user) => {
-                                    return <option key={user._id} value={user._id}>{user.profile.name}</option>
+                                    return <option key={user._id} value={user._id}>{user.profile ? user.profile.name : user.name}</option>
                                 }
                             )}
                         </select>
@@ -45,10 +55,9 @@ class Group extends Component {
     handleNewUser(event){
         event.preventDefault();
         const newUserId = ReactDOM.findDOMNode(this.refs.selectedUser).value.trim();
-        const newUser = Meteor.users.findOne({_id:newUserId});
-        console.log(newUser);
-        Groups.update({_id:this.props.group._id}, {$addToSet: {users: newUser}});
-
+        let newUser = Meteor.users.findOne({_id:newUserId});
+        //newUser = {id: newUser._id, name: newUser.name};
+        Meteor.call('groups.addUser', this.props.group._id, newUser);
     }
 
 
@@ -65,6 +74,7 @@ class Group extends Component {
                     Remove Group
                     &times;
                 </button>
+                {this.renderEvents()}
                 <a href={FlowRouter.path('createEvent', {id:FlowRouter.getParam("id")})}>Create Event</a>
 
             </div>
@@ -79,9 +89,15 @@ Group.propTypes = {
 
 export default createContainer(() => {
     const id = FlowRouter.getParam("id");
-    console.log('!!!   id: ' + id);
     const group = Groups.find({'_id':id}).fetch()[0];
-    const users = Meteor.users.find().fetch();
+    if ( group && group.users){
+        var userIds = group.users.map((user) => {
+            return user._id
+        });
+    } else {
+        var userIds = [];
+    }
+    const users = Meteor.users.find({_id:{$nin: userIds}}).fetch();
 
     return {
         group: !!group ? group : {},

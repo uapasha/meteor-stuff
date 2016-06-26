@@ -1,7 +1,7 @@
 import {Groups } from '../imports/api/groups.js';
 import {Items} from '../imports/api/items.js';
 
-if (!Meteor.users.find().count()){
+if (Meteor.users.find().count()<2){
     let tomId = Meteor.users.insert({
         profile: { name: 'Tom Coleman' }
     });
