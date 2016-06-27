@@ -1,5 +1,5 @@
 import React, { Component, PropTypes} from 'react';
-import MenuItems from './MenuItems.jsx';
+import MenuItems from './GroupItems.jsx';
 import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -21,19 +21,17 @@ class Group extends Component {
     }
 
     renderEvents(){
-        return <div>
-            <h1>Events: </h1>
-            {this.props.events.map((event) => {
-                if(!!event){
-
+        if (this.props.events[0]){
+            return <div>
+                <h1>Events: </h1>
+                {this.props.events.map((event) => {
                     return <Event event={event} key={'event_' + event._id}/>
-                } else {
-                    <p>Event is not available</p>
+                })}
+            </div>
+            } else {
+                return<div> <p>There are no events yet</p> </div>
                 }
-            })}
-
-        </div>
-    }
+            }
 
     addUser(){
     return<fieldset>

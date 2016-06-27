@@ -6,8 +6,7 @@ import {PizzaItem} from './PizzaItem.jsx'
 import {Meteor} from 'meteor/meteor';
 
 class MenuItems extends Component {
-
-
+    
     addNewItem(){
         return (
             <fieldset>
@@ -24,43 +23,13 @@ class MenuItems extends Component {
                 </select>
                     <input type="submit" value="Add item"/>
                 </form>
-
             </fieldset>
         )
     }
 
-    createNewItem(){
-        return<fieldset>
-            <legend>Create new Item</legend>
-                <form onSubmit={this.insertItem.bind(this)}>
-                    <input
-                        type="text"
-                        ref="newItemName"
-                        required
-                        placeholder="Enter new pizza name"/>
-                    <input
-                        type='number'
-                        ref="newItemPrice"
-                        required
-                        min="50.0" 
-                        max="500.0"
-                        step="0.01"
-                        placeholder="0.0"/>
-                    <input type="submit" value="Create new pizza"/>
-
-                </form>
-
-        </fieldset>
-    }
-
-    insertItem(event){
-        event.preventDefault();
-        const name = ReactDOM.findDOMNode(this.refs.newItemName).value.trim();
-        const price = parseInt(ReactDOM.findDOMNode(this.refs.newItemPrice).value.trim());
-        Meteor.call('items.create', name, price);
-        ReactDOM.findDOMNode(this.refs.newItemPrice).value = '';
-        ReactDOM.findDOMNode(this.refs.newItemName).value = '';
-
+    deleteItem(event){
+        console.log(event.target.name);
+        Meteor.call('groups.deleteItem', this.props.currentGroupId, event.target.name);
     }
 
     addItem(event){
@@ -70,27 +39,36 @@ class MenuItems extends Component {
         Meteor.call('groups.addItem', this.props.currentGroupId, newItem);
     }
 
-
     render() {
         if (this.props.groupItems && this.props.groupItems.length > 0) {
             return <div className='ItemsBox'>
                 {this.props.groupItems.map((item)=> {
-                        return <PizzaItem key={item._id} item={item} currentGroupId={this.props.currentGroupId}/>
+                        if (this.props.loading){
+                            return <p key={item._id}>The items are loading</p>
+                        } else {
+                            return <div key={item._id}>
+                                <PizzaItem
+                                    item={item}/>
+                                <button className="delete" onClick={this.deleteItem.bind(this)} name={item._id}>
+                                    Remove Item
+                                    &times;
+                                </button>
+                            </div>
+                        }
                     }
                 )}
-
                 <h1>Total:
                     {this.props.groupItems.reduce((sum, item) =>
                         (item.price + sum), 0)}
                 </h1>
                 <div>{this.addNewItem()}</div>
-                {this.createNewItem()}
-
+                <a href={FlowRouter.path('menu')}>Edit menu</a>
             </div>
         } else{
             return <div>
                     <p>...No items available...</p>
                     <div>{this.addNewItem()}</div>
+                    <a href={FlowRouter.path('menu')}>Edit menu</a>
                 </div>
         }
     }
@@ -101,8 +79,12 @@ MenuItems.propTypes = {
 };
 
 export default createContainer(() => {
-    Meteor.subscribe('items');
+    const itemsHandle = Meteor.subscribe('items');
+    const loading = !itemsHandle.ready();
+    const items = Items.find().fetch();
+    const itemsExists = !loading && !!items[0];
     return {
-        items: Items.find().fetch()
+        loading: loading,
+        items: itemsExists ? items : []
     }
 }, MenuItems);

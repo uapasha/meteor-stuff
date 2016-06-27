@@ -25,7 +25,7 @@ if (Meteor.isServer) {
 
 Meteor.methods({
 
-    'groups.deleteItem'(groupId, item){
+    'groups.deleteItem'(groupId, itemId){
         check(groupId, String);
         //check(item, String);
 
@@ -35,11 +35,21 @@ Meteor.methods({
         }
         Groups.update(
             {_id: groupId},
-            {$pull: {items: {_id: item}}},
+            {$pull: {items: {_id: itemId}}},
         );
     },
     'groups.addItem'(groupId, newItem){
         Groups.update({_id:groupId}, {$addToSet: {items: newItem}});
+    },
+    'groups.removeItemCompletely'(itemId){
+        if (!this.userId) {
+            throw new Meteor.Error('not-authorized');
+        }
+        Groups.update(
+            {},
+            { $pull: { items: { _id: itemId }}},
+            { multi: true }
+        );
     },
 
     'groups.deleteGroup'(groupId){

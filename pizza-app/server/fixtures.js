@@ -24,9 +24,9 @@ if (Groups.find().count() === 0) {
 }
 
 let itemsData = [
-            {name: 'margarita', price: 100}, {name: 'napolitano', price: 200},
-            {name: 'quatro formaggi', price: 150}, {name: 'gavaian', price: 200},
-            {name: 'seafood pizza', price: 250}, {name: 'Papperoni', price: 170}
+            {_id: '0', name: 'margarita', price: 100}, {_id:'3', name: 'napolitano', price: 200},
+            {_id: '1', name: 'quatro formaggi', price: 150}, {_id: '4', name: 'gavaian', price: 200},
+            {_id: '2', name: 'seafood pizza', price: 250}, {_id: '5', name: 'Papperoni', price: 170}
 ];
 
 if (Items.find().count() === 0) {

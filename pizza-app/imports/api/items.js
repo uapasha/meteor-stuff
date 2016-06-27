@@ -6,7 +6,7 @@ import {check} from 'meteor/check'
 export const Items = new Mongo.Collection('items');
 
 if(Meteor.isServer){
-    Meteor.publish('items', function itemsPubliacation(){
+    Meteor.publish('items', function itemsPublication(){
         return Items.find();
     })
 }
@@ -23,5 +23,13 @@ Meteor.methods({
         Items.insert({
             name:name,
             price:price});
+    },
+    'items.deleteItem'(itemId){
+        check(itemId, String);
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        Items.remove({_id:itemId});
+        Meteor.call('groups.removeItemCompletely', itemId);
     }
 });
