@@ -9,6 +9,8 @@ import Group from '../ui/Group.jsx';
 import Users from '../ui/Users.jsx';
 import CreateEventContainer from '../ui/CreateEventContainer.jsx';
 import Menu from '../ui/Menu.jsx';
+import SingleUserMakeOrderContainer from '../ui/SingleUserMakeOrderContainer.jsx'
+
 
 FlowRouter.route('/',{
     name:'home',
@@ -42,6 +44,13 @@ FlowRouter.route('/menu/edit', {
     name: 'menu',
     action(){
         mount(Menu)
+    }
+});
+
+FlowRouter.route('/events/:groupId/:eventId',{
+    name:'SingleUserMakeOrder',
+    action(params){
+        mount(SingleUserMakeOrderContainer, {eventId: params.eventId, groupId:params.groupId})
     }
 });
 

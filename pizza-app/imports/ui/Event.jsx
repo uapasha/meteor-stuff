@@ -11,6 +11,10 @@ export class Event extends Component{
     declineEvent(){
         Meteor.call('events.addRefused', this.props.event._id);
     }
+    handleChooseItems(){
+        FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
+                                            eventId:this.props.event._id})
+    }
     renderButton() {
         let participantUserIds = [];
         this.props.event.participants.forEach((user) => {
@@ -27,7 +31,9 @@ export class Event extends Component{
                 <button onClick={this.takePart.bind(this)}>Take part</button>
                 <button onClick={this.declineEvent.bind(this)}>Decline</button>
             </div>
-        } else return <button>Choose items</button>
+        } else return <button onClick={this.handleChooseItems.bind(this)}>
+            Choose items
+        </button>
     }
 
     render (){
