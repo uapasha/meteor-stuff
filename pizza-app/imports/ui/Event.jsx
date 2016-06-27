@@ -8,15 +8,24 @@ export class Event extends Component{
     takePart(){
         Meteor.call('events.addParticipant', this.props.event._id);
     }
+    declineEvent(){
+        Meteor.call('events.addRefused', this.props.event._id);
+    }
     renderButton() {
-        let userIds = [];
+        let participantUserIds = [];
         this.props.event.participants.forEach((user) => {
-            userIds.push(user._id);
+            participantUserIds.push(user._id);
         });
-        if (userIds.indexOf(Meteor.userId()) === -1) {
+        let refusedUserIds = [];
+        this.props.event.refused.forEach((user) => {
+            refusedUserIds.push(user._id);
+        });
+        if (refusedUserIds.indexOf(Meteor.userId()) !==-1) {
+            return <p>Sorry, you had refused to participate</p>
+        } else if(participantUserIds.indexOf(Meteor.userId()) === -1 ){
             return <div>
                 <button onClick={this.takePart.bind(this)}>Take part</button>
-                <button>Decline</button>
+                <button onClick={this.declineEvent.bind(this)}>Decline</button>
             </div>
         } else return <button>Choose items</button>
     }

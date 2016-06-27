@@ -32,19 +32,40 @@ Meteor.methods({
             items: eventItems,
             eventCreatorId: this.userId,
             eventCreatorName: Meteor.user().username,
-            participants: [{name: Meteor.user().username, _id: this.userId}]
+            participants: [{name: Meteor.user().username, _id: this.userId}],
+            refused: [],
 
     });
     },
     
     'events.addParticipant'(eventId){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        check(eventId, String);
         Events.update({
             _id:eventId
         }, {
             $addToSet: {
                 participants: {
-                    name: Meteor.user().username ? Meteor.user().username : Meteor.user.profile.name,
+                    name: Meteor.user().username ? Meteor.user().username : Meteor.user().profile.name,
                     _id: this.userId
+                }
+            }
+        });
+    },
+    'events.addRefused'(eventId){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        check(eventId, String);
+        Events.update({
+            _id:eventId
+        }, {
+            $addToSet: {
+                refused: {
+                    name: Meteor.user().username ? Meteor.user().username : Meteor.user().profile.name,
+                    _id:this.userId
                 }
             }
         });
