@@ -12,8 +12,8 @@ export default class Users extends Component {
         if (this.props.users && this.props.users.length > 0) {
             return <div className='ItemsBox'>
                 {this.props.users.map((user)=> {
-                    return <div key={'main' + user._id}>
-                            <p>{user.profile.name}</p>
+                    return <div key={'main' + user.id}>
+                            <p>{user.name}</p>
                         </div>
                     }
                 )}

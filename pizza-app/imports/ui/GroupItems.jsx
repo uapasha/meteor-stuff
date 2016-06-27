@@ -28,7 +28,7 @@ class MenuItems extends Component {
     }
 
     deleteItem(event){
-        console.log(event.target.name);
+        //console.log(event.target.name);
         Meteor.call('groups.deleteItem', this.props.currentGroupId, event.target.name);
     }
 

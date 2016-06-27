@@ -18,7 +18,7 @@ export class Menu extends Component {
 
     deleteItem(event){
         const itemId = event.target.name.split('_')[1];
-        console.log(itemId);
+        //console.log(itemId);
         const sure = confirm('This will delete item from all groups. Are you sure?');
         if (sure) Meteor.call('items.deleteItem', itemId);
     }

@@ -42,7 +42,7 @@ class Group extends Component {
                     name="user"
                     ref="selectedUser">
                     {this.props.users.map((user) => {
-                            return <option key={user._id} value={user._id}>{user.profile ? user.profile.name : user.name}</option>
+                            return <option key={user._id} value={user._id}>{user.profile ? user.profile.name : user.username}</option>
                         }
                     )}
                 </select>
@@ -56,7 +56,7 @@ class Group extends Component {
         event.preventDefault();
         const newUserId = ReactDOM.findDOMNode(this.refs.selectedUser).value.trim();
         let newUser = Meteor.users.findOne({_id:newUserId});
-        //newUser = {id: newUser._id, name: newUser.name};
+        newUser = {id: newUser._id, name: newUser.username ? newUser.username : newUser.profile.name};
         Meteor.call('groups.addUser', this.props.group._id, newUser);
     }
 
@@ -76,6 +76,21 @@ class Group extends Component {
         }
     }
 
+    goCreateEvent(){
+        FlowRouter.go('createEvent', {id:FlowRouter.getParam("id")});
+    }
+    renderCreateEventButton(){
+        if (this.props.group.creatorId) {
+            if (this.props.group.creatorId == Meteor.userId()) {
+                return <button onClick={this.goCreateEvent.bind(this)}>
+                    Create Event
+                </button>
+            } else return <p>Only group creator can create Event</p>
+        } else return <button onClick={this.goCreateEvent.bind(this)}>
+            Create Event
+        </button>
+    }
+
     render(){
         return (
 
@@ -88,7 +103,7 @@ class Group extends Component {
                 {this.renderRemoveButton()}
 
                 {this.renderEvents()}
-                <a href={FlowRouter.path('createEvent', {id:FlowRouter.getParam("id")})}>Create Event</a>
+                {this.renderCreateEventButton()}
 
             </div>
         );
@@ -109,15 +124,16 @@ export default createContainer(() => {
     const group = Groups.find({'_id':id}).fetch()[0];
     if ( group && group.users){
         var userIds = group.users.map((user) => {
-            return user._id
+            return user.id
         });
     } else {
         var userIds = [];
     }
     const users = Meteor.users.find({_id:{$nin: userIds}}).fetch();
+
     return {
         group: !!group ? group : {},
         users: !!users ? users : [],
-        events: !!group ? Events.find({'group.id':group._id}).fetch() : []
+        events: !!group ? Events.find({'group._id':group._id}).fetch() : []
     };
 }, Group);

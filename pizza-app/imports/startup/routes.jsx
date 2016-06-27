@@ -7,13 +7,13 @@ import  App from '../ui/App.jsx';
 
 import Group from '../ui/Group.jsx';
 import Users from '../ui/Users.jsx';
-import CreateEventContainer from '../ui/CreateEvent.jsx';
+import CreateEventContainer from '../ui/CreateEventContainer.jsx';
 import Menu from '../ui/Menu.jsx';
 
 FlowRouter.route('/',{
     name:'home',
     action() {
-        mount(App, {})
+        mount(App)
     }
 });
 

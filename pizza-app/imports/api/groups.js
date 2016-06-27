@@ -12,8 +12,22 @@ export const Groups = new Mongo.Collection('groups');
 if (Meteor.isServer) {
 
     Meteor.publish('groups', function groupsPublication() {
+        
         return Groups.find();
     });
+    
+    Meteor.publish('groupsForUser', function (){
+        const CurrentUserId = this.userId;
+        return Groups.find({
+            users: {
+                $elemMatch: {
+                    id: CurrentUserId
+                }
+            }
+        });
+        
+    });
+    
     Meteor.publish('users', function usersPublication() {
         return Meteor.users.find({}, {_id:1, 'profile.name':1})
     });
@@ -51,6 +65,13 @@ Meteor.methods({
             { multi: true }
         );
     },
+    'groups.updateItem'(id, name, price){
+        Groups.update(
+            {'items._id':id},
+            {$set: {'items.$.name':name, 'items.$.price':price}},
+            { multi: true }
+        )
+    },
 
     'groups.deleteGroup'(groupId){
         check(groupId, String);
@@ -73,7 +94,8 @@ Meteor.methods({
             createdAt: new Date(),
             img: imgUrl,
             creatorId: Meteor.userId(),
-            creatorName: Meteor.user().username
+            creatorName: Meteor.user().username,
+            users: [{name:Meteor.user().username, id:Meteor.userId()}]
         });
     },
 
@@ -81,7 +103,7 @@ Meteor.methods({
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
         }
-        if (!!Groups.find({_id:groupId, 'users._id':newUser._id}).fetch()[0]){
+        if (!!Groups.find({_id:groupId, 'users._id':newUser.id}).fetch()[0]){
             console.log('User has already been added');
             throw new Meteor.Error('User has already been added');
 

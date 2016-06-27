@@ -1,78 +1,52 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import {Items} from '../api/items.js';
-import {Groups} from '../api/groups.js';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { createContainer } from 'meteor/react-meteor-data';
 
-class CreateGroup extends Component {
+import {Meteor} from 'meteor/meteor';
 
-
+export class CreateGroup extends Component {
     handleSubmit(event){
         event.preventDefault();
 
         const groupName = ReactDOM.findDOMNode(this.refs.textInput)
             .value
-            .trim()
+            .trim();
 
-        Groups.insert({
-            name:groupName,
-            createdAt: new Date()
-        });
+        const imgUrl = ReactDOM.findDOMNode(this.refs.imageUrl).value.trim();
+
+        Meteor.call('groups.createGroup', groupName, imgUrl);
 
         ReactDOM.findDOMNode(this.refs.textInput).value = '';
     }
-    
-    addNewItem() {
-        return (
-            <div>
-                <select
-                    name="pizza"
-                    ref="selectedPizza">
-                    {this.props.items.map((item) => {
-                            return <option key={item._id} value={item._id}>{item.name}</option>
-                        }
-                    )}
-                </select>
-            </div>
-        )
+
+    renderForm(){
+        if (this.props.currentUser){
+            return<fieldset>
+                <legend>Create a new Group</legend>
+                <form
+                    className="add-group"
+                    onSubmit={this.handleSubmit.bind(this)}>
+                    <input
+                        type="text"
+                        ref="textInput"
+                        required
+                        placeholder="Enter Group Name"/>
+                    <input
+                        type="text"
+                        ref="imageUrl"
+                        placeholder="Enter logo url"/>
+                    <input
+                        type="submit" value="Add new Group"/>
+                </form>
+            </fieldset>
+        } else {
+            return<div class="log-in-warning"> <p>Log in to create group</p></div>
+        }
     }
 
-    render(){
-        return (
-            <div className="container">
-                <header>
-                    <h1>Add new group</h1>
-                </header>
+    render() {
+        return <div>
+            {this.renderForm()}
+        </div>
 
-                <fieldset>
-                    <legend>Create a new Group</legend>
-                    <form
-                        className="add-group"
-                        onSubmit={this.handleSubmit.bind(this)}>
-                        <input
-                            type="text"
-                            ref="textInput"
-                            placeholder="Enter Group Name"/>
-                        {this.addNewItem()}
-                        <input
-                            type="submit" value="Add new Group"/>
-
-                    </form>
-                </fieldset>
-
-            </div>
-
-        )
     }
 }
-
-CreateGroup.propTypes = {
-    items: PropTypes.array,
-};
-
-export default createContainer(() => {
-    return {
-        items: Items.find().fetch(),
-    }
-}, CreateGroup);
