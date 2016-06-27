@@ -5,6 +5,12 @@ import {check} from 'meteor/check'
 
 export const Items = new Mongo.Collection('items');
 
+if(Meteor.isServer){
+    Meteor.publish('items', function itemsPubliacation(){
+        return Items.find();
+    })
+}
+
 Meteor.methods({
     'items.create'(name, price){
         check(name, String);

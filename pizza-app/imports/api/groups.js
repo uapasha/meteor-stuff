@@ -6,6 +6,23 @@ import {Match} from 'meteor/check';
 export const Groups = new Mongo.Collection('groups');
 
 
+///////// Publications ///////
+
+
+if (Meteor.isServer) {
+
+    Meteor.publish('groups', function groupsPublication() {
+        return Groups.find();
+    });
+    Meteor.publish('users', function usersPublication() {
+        return Meteor.users.find({}, {_id:1, 'profile.name':1})
+    });
+    
+    Meteor.publish('groupForEvent', function groupForEvent(groupId){
+        return Groups.find({'_id':groupId})
+    })
+}
+
 Meteor.methods({
 
     'groups.deleteItem'(groupId, item){
@@ -27,6 +44,11 @@ Meteor.methods({
 
     'groups.deleteGroup'(groupId){
         check(groupId, String);
+        const group = Groups.findOne(groupId);
+        if (group.creatorId && group.creatorId !== this.userId) {
+            // If the task is private, make sure only the owner can check it off
+            throw new Meteor.Error('not-authorized');
+        }
         Groups.remove({_id:groupId});
     },
 
@@ -40,7 +62,7 @@ Meteor.methods({
             name:groupName,
             createdAt: new Date(),
             img: imgUrl,
-            creator: Meteor.userId(),
+            creatorId: Meteor.userId(),
             creatorName: Meteor.user().username
         });
     },

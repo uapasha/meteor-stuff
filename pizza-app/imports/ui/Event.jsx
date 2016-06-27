@@ -7,7 +7,7 @@ export class Event extends Component{
     render (){
         return <div>
             <p>Event Date: {this.props.event.date.toISOString()}</p>
-            <p>Group prticipant: {this.props.event.group.name}</p>
+            <p>Group participant: {this.props.event.group.name}</p>
             <ul>
             {this.props.event.items.map((item) => {
                 return <li key={item.id}>{item.name}: {item.amount}</li>

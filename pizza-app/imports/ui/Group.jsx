@@ -36,27 +36,22 @@ class Group extends Component {
     }
 
     addUser(){
-        {
-            return (
-                <fieldset>
-                    <legend>Add User To Group</legend>
-                    <form
-                        onSubmit={this.handleNewUser.bind(this)}>
-                        <select
-                            name="user"
-                            ref="selectedUser">
-                            {this.props.users.map((user) => {
-                                    return <option key={user._id} value={user._id}>{user.profile ? user.profile.name : user.name}</option>
-                                }
-                            )}
-                        </select>
-                        <input type="submit" value="Add user"/>
-                    </form>
+    return<fieldset>
+            <legend>Add User To Group</legend>
+            <form
+                onSubmit={this.handleNewUser.bind(this)}>
+                <select
+                    name="user"
+                    ref="selectedUser">
+                    {this.props.users.map((user) => {
+                            return <option key={user._id} value={user._id}>{user.profile ? user.profile.name : user.name}</option>
+                        }
+                    )}
+                </select>
+                <input type="submit" value="Add user"/>
+            </form>
 
-                </fieldset>
-            )
-        }
-
+        </fieldset>
     }
 
     handleNewUser(event){
@@ -67,6 +62,21 @@ class Group extends Component {
         Meteor.call('groups.addUser', this.props.group._id, newUser);
     }
 
+    renderRemoveButton(){
+        if (this.props.group.creatorId) {
+            if (this.props.group.creatorId == Meteor.userId()){
+                return<button className="deleteGroup" onClick={this.deleteGroup.bind(this)}>
+                    Remove Group
+                    &times;
+                </button>
+            } else return <p>Only group creator can remove group</p>
+        } else {
+            return<button className="deleteGroup" onClick={this.deleteGroup.bind(this)}>
+                Remove Group
+                &times;
+            </button>
+        }
+    }
 
     render(){
         return (
@@ -77,10 +87,8 @@ class Group extends Component {
                 <img src={this.props.group.img} alt={this.props.group.name + ' logo'}/>
                 {this.getUsers()}
                 {this.addUser()}
-                <button className="deleteGroup" onClick={this.deleteGroup.bind(this)}>
-                    Remove Group
-                    &times;
-                </button>
+                {this.renderRemoveButton()}
+
                 {this.renderEvents()}
                 <a href={FlowRouter.path('createEvent', {id:FlowRouter.getParam("id")})}>Create Event</a>
 
@@ -97,6 +105,9 @@ Group.propTypes = {
 
 export default createContainer(() => {
     const id = FlowRouter.getParam("id");
+    Meteor.subscribe('groups');
+    Meteor.subscribe('users');
+    Meteor.subscribe('events', id);
     const group = Groups.find({'_id':id}).fetch()[0];
     if ( group && group.users){
         var userIds = group.users.map((user) => {

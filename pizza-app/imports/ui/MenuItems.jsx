@@ -101,7 +101,8 @@ MenuItems.propTypes = {
 };
 
 export default createContainer(() => {
-        return {
-            items: Items.find().fetch()
-        }
-    }, MenuItems);
+    Meteor.subscribe('items');
+    return {
+        items: Items.find().fetch()
+    }
+}, MenuItems);

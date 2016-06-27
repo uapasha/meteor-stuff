@@ -104,6 +104,7 @@ App.propTypes = {
 };
 
 export default createContainer(() => {
+    Meteor.subscribe('groups');
     return {
         groups: Groups.find({}).fetch(),
         currentUser: Meteor.user()

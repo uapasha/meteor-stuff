@@ -59,7 +59,7 @@ class CreateEvent extends Component {
         Meteor.call('events.create', eventDateTime, this.props.group.name, this.props.group._id, eventItems);
         // console.log(Events.find().fetch());
         // if (Events.find().fetch()) {
-        //     FlowRouter.go('home');
+        FlowRouter.go('singleGroup', {id: this.props.group._id});
         // }
 
 
@@ -116,7 +116,6 @@ class Item extends Component{
     handleAmountChanged(id, event){
         event.preventDefault();
         this.setState({amount:event.target.value});
-        console.log(event.target.value);
         this.props.totalAmount(id, event.target.value);
     }
     render(){
@@ -134,6 +133,7 @@ class Item extends Component{
 
 export default CreateEventContainer = createContainer(() => {
     const id = FlowRouter.getParam("id");
+    Meteor.subscribe('groupForEvent', id);
     const group = Groups.find({'_id':id}).fetch()[0];
     let groupNow = !!group ? group : {};
     return {
