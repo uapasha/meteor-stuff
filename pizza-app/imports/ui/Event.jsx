@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
 import OrderContainer from './OrderContainer.jsx';
+import ReactDOM from 'react-dom';
 
 export class Event extends Component{
     constructor(props){
@@ -81,16 +82,37 @@ export class Event extends Component{
         confirm('Are you sure you want to cancel Event?') ? Meteor.call('events.cancelEvent', eventId) : ''
     }
     renderCancelEventButton(){
-        if(this.props.event.eventCreatorId == Meteor.userId()){
+        if(this.props.event.eventCreatorId == Meteor.userId() && this.props.event.status !== 'delivered'){
             return <button onClick={this.handleCancelEvent.bind(this, event, this.props.event._id)}>
                 Cancel Event
             </button>
         }
     }
 
+    handleChangeStatus(){
+        const newStatus = ReactDOM.findDOMNode(this.refs.changeStatus).value.trim();
+        Meteor.call('events.changeEventStatus', this.props.event._id, newStatus)
+    }
+
+    renderStatusOptions(){
+        if (this.props.event.eventCreatorId == Meteor.userId()){
+            return<fieldset>
+                <legend>Event Status</legend>
+                <p>Current status: <strong>{this.props.event.status}</strong></p>
+                <label>Change status</label>
+                <select ref='changeStatus'>
+                    <option value="new">New</option>
+                    <option value="ordering">Ordering</option>
+                    <option value="delivered">Delivered/completed</option>
+                </select>
+                <button onClick={this.handleChangeStatus.bind(this)}>Change event Status</button>
+            </fieldset>
+        }
+    }
+
     render (){
         return <div>
-            <p>Event Date: {this.props.event.date.toISOString()}</p>
+            <p>Event Date: {this.props.event.date.toLocaleString('en-US')}</p>
             <p>Group: {this.props.event.group.name}</p>
             <p>Participants:</p>
             <ul>
@@ -99,9 +121,12 @@ export class Event extends Component{
                 })}
             </ul>
             {this.renderOrder()}
+            <hr/>
+            {this.renderStatusOptions()}
 
             {this.props.event.status === 'new' ? this.renderButtons() : ''}
             {this.props.event.status === 'ordering' ? <p>Orders are completed. Delivery will be soon</p> : ''}
+            {this.props.event.status === 'delivered' ? <p>Event has completed. How was the pizza??</p> : ''}
             {this.renderCancelEventButton()}
         </div>
     }

@@ -79,6 +79,19 @@ Meteor.methods({
         Meteor.call('events.checkEventStatus', eventId);
     },
 
+    'events.changeEventStatus'(eventId, newStatus){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        check(eventId, String);
+        check(newStatus, String);
+        const Creator = Events.findOne({_id:eventId}).eventCreatorId;
+        if (Creator != this.userId){
+            throw new Meteor.Error('Only group Creator can change Event\'s status');
+        }
+        Events.update({_id: eventId},  {$set:{status: newStatus}})
+    },
+
     'events.checkEventStatus'(eventId){
         check(eventId, String);
         // console.log(eventId);
@@ -109,7 +122,7 @@ Meteor.methods({
             throw new Meteor.Error('not-authorized');
         }
         check(eventId, String);
-        const Creator = Events.findOne({_id:eventId}).eventCreatorId
+        const Creator = Events.findOne({_id:eventId}).eventCreatorId;
         if (Creator != this.userId){
             throw new Meteor.Error('Only group Creator can create Events');
         }
