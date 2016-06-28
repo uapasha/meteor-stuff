@@ -17,12 +17,14 @@ class Group extends Component {
     }
 
     getUsers(){
-        return <Users users={this.props.group.users}/>
+        return <Users users={this.props.group.users} 
+                      creatorId={this.props.group.creatorId} 
+                      groupId = {this.props.group._id}/>
     }
 
     renderEvents(){
         if (this.props.events[0]){
-            return <div>
+            return <div class="eventsList">
                 <h1>Events: </h1>
                 {this.props.events.map((event) => {
                     return <Event event={event} key={'event_' + event._id}/>
@@ -95,16 +97,22 @@ class Group extends Component {
         return (
 
             <div className="group-information">
-                <li>{this.props.group.name}</li>
-                    <GroupItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/>
+                <h1>Group that is called: {this.props.group.name}</h1>
                 <img src={this.props.group.img} alt={this.props.group.name + ' logo'}/>
+                <hr/>
+                <GroupItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/>
+                <hr/>
+                <h1>Users:</h1>
                 {this.getUsers()}
                 {this.addUser()}
-                {this.renderRemoveButton()}
 
+                <hr/>
                 {this.renderEvents()}
                 {this.renderCreateEventButton()}
 
+                <hr/>
+                {this.renderRemoveButton()}
+                <button onClick={()=>FlowRouter.go('home')}>Go home</button>
             </div>
         );
     }

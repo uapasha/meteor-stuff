@@ -9,7 +9,9 @@ if (Meteor.isServer){
     Meteor.publish('events', function eventsPublication(groupId) {
         return Events.find({'group._id':groupId})
     });
-
+    Meteor.publish('eventsForUser', function eventsPublication() {
+        return events = Events.find({eventCreatorId:this.userId});
+    })
 }
 // if(Meteor.isServet){
 //
@@ -73,7 +75,22 @@ Meteor.methods({
                     total_sum: totalSum
                 }
             }
-        })
+        });
+        Meteor.call('events.checkEventStatus', eventId);
+    },
+
+    'events.checkEventStatus'(eventId){
+        check(eventId, String);
+        // console.log(eventId);
+        const event = Events.findOne({_id:eventId});
+        // console.log(event);
+        const numberOrders = event.orders.length;
+        const numberRefused = event.refused.length;
+        const numberInGroup = Groups.findOne({_id: event.group._id}).users.length;
+        console.log(numberOrders, numberRefused, numberInGroup);
+        if (numberOrders + numberRefused === numberInGroup){
+            Events.update({_id: eventId},  {$set:{status: 'ordering'}})
+        }
     },
 
     'events.removeOrder'(eventId){
@@ -87,12 +104,23 @@ Meteor.methods({
             { multi: true }
         );
     },
+    'events.cancelEvent'(eventId){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        check(eventId, String);
+        const Creator = Events.findOne({_id:eventId}).eventCreatorId
+        if (Creator != this.userId){
+            throw new Meteor.Error('Only group Creator can create Events');
+        }
+        Events.remove({_id:eventId});
+    },
 
     'events.removeGroupEvents'(groupId){
         if (! this.userId){
             throw new Meteor.Error('not-authorized');
         }
-        Events.remove({'group._Id': groupId});
+        Events.remove({'group._id': groupId});
     },
 
     'events.addParticipant'(eventId){

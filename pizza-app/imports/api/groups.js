@@ -83,7 +83,7 @@ Meteor.methods({
         Groups.remove({_id:groupId});
         Meteor.call('events.removeGroupEvents', groupId);
     },
-
+    
     'groups.createGroup'(groupName, imgUrl){
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
@@ -112,6 +112,20 @@ Meteor.methods({
         } else {
             Groups.update({_id: groupId}, {$addToSet: {users: newUser}});
         }
+    },
+    'groups.removeUser'(userId, groupId){
+        if (!this.userId) {
+            throw new Meteor.Error('not-authorized');
+        }
+        const group = Groups.findOne({_id:groupId});
+        if (group.creatorId && group.creatorId !== this.userId) {
+            // only group creator can remove user
+            throw new Meteor.Error('not-authorized, only group creator can uninvite User');
+        }
+        Groups.update(
+            {_id: groupId},
+            { $pull: { users: { id: userId }}}
+        );
     }
 
 });

@@ -67,13 +67,25 @@ export class Event extends Component{
 
         } else if(orderedUser.indexOf(userId) !== -1){
             return<div>
-                    <button onClick={this.showOrder.bind(this)}>{this.state.showOrder ? 'Hide your order':'See your order'}</button>
+                    <button onClick={this.showOrder.bind(this)}>
+                        {this.state.showOrder ? 'Hide your order':'See your order'}
+                    </button>
                     <button onClick={this.changeOrder.bind(this)}>Change order</button>
                 </div>
 
         }else return <button onClick={this.handleChooseItems.bind(this)}>
             Choose items
         </button>
+    }
+    handleCancelEvent(event, eventId){
+        confirm('Are you sure you want to cancel Event?') ? Meteor.call('events.cancelEvent', eventId) : ''
+    }
+    renderCancelEventButton(){
+        if(this.props.event.eventCreatorId == Meteor.userId()){
+            return <button onClick={this.handleCancelEvent.bind(this, event, this.props.event._id)}>
+                Cancel Event
+            </button>
+        }
     }
 
     render (){
@@ -89,6 +101,8 @@ export class Event extends Component{
             {this.renderOrder()}
 
             {this.props.event.status === 'new' ? this.renderButtons() : ''}
+            {this.props.event.status === 'ordering' ? <p>Orders are completed. Delivery will be soon</p> : ''}
+            {this.renderCancelEventButton()}
         </div>
     }
 }

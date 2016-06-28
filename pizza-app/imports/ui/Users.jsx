@@ -7,6 +7,10 @@ import {PizzaItem} from './PizzaItem.jsx'
 import {Meteor} from 'meteor/meteor'
 
 export default class Users extends Component {
+    removeUser(event, userId){
+        console.log(userId);
+        Meteor.call('groups.removeUser', userId, this.props.groupId);
+    }
     
     render() {
         if (this.props.users && this.props.users.length > 0) {
@@ -14,6 +18,9 @@ export default class Users extends Component {
                 {this.props.users.map((user)=> {
                     return <div key={'main' + user.id}>
                             <p>{user.name}</p>
+                        {this.props.creatorId == Meteor.userId() ?
+                            <button onClick={this.removeUser.bind(this, event, user.id)}>Remove User</button> :
+                            ''}
                         </div>
                     }
                 )}

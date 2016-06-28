@@ -64,23 +64,23 @@ export class CreateEvent extends Component {
 
 
     }
-    getTotalSum() {
-        if (this.state) {
-            return Object.keys(this.state).reduce((sum, id)=> {
-                let itemPrice = 0;
-                this.props.items.forEach((item) => {
-
-                    if (item._id == id){
-                        itemPrice = item.price;
-                    }
-                });
-                return sum + parseInt(this.state[id], 10) * itemPrice
-            }, 0)
-
-        } else {
-            return 0
-        }
-    }
+    // getTotalSum() {
+    //     if (this.state) {
+    //         return Object.keys(this.state).reduce((sum, id)=> {
+    //             let itemPrice = 0;
+    //             this.props.items.forEach((item) => {
+    //
+    //                 if (item._id == id){
+    //                     itemPrice = item.price;
+    //                 }
+    //             });
+    //             return sum + parseInt(this.state[id], 10) * itemPrice
+    //         }, 0)
+    //
+    //     } else {
+    //         return 0
+    //     }
+    // }
     render() {
         return <div>
             <h1>Create Event</h1>
@@ -93,7 +93,6 @@ export class CreateEvent extends Component {
                         <input ref="eventTime" type="time" defaultValue={this.getDefaultTime()} name="selectDate"
                         step ='300.0'/>
                     </label>
-                    <h1>Total sum is {this.getTotalSum()}</h1>
                     <input type="submit" value ='Create Event'/>
                 </fieldset>
             </form>

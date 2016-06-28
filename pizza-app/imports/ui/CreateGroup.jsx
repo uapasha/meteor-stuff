@@ -11,7 +11,11 @@ export class CreateGroup extends Component {
             .value
             .trim();
 
-        const imgUrl = ReactDOM.findDOMNode(this.refs.imageUrl).value.trim();
+        let imgUrl = ReactDOM.findDOMNode(this.refs.imageUrl).value.trim();
+
+        if (imgUrl == ''){
+            imgUrl = '/default-pizza-group-image.jpg'
+        }
 
         Meteor.call('groups.createGroup', groupName, imgUrl);
 
