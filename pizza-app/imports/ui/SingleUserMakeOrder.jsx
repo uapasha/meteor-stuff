@@ -38,13 +38,9 @@ export class SingleUserMakeOrder extends Component {
                 amount: this.state[item._id] ? this.state[item._id] : 0})
         });
 
-        Meteor.call('events.create', eventDateTime, this.props.group.name, this.props.group._id, eventItems);
-        // console.log(Events.find().fetch());
-        // if (Events.find().fetch()) {
-        FlowRouter.go('singleGroup', {id: this.props.group._id});
-        // }
-
-
+        const totalSum = this.getTotalSum.call(this);
+        Meteor.call('events.placeOrder', this.props.eventId, eventItems, totalSum);
+        FlowRouter.go('singleGroup', {id: this.props.groupId});
     }
     getTotalSum() {
         if (this.state) {
@@ -78,6 +74,7 @@ export class SingleUserMakeOrder extends Component {
 }
 
 SingleUserMakeOrder.propTypes = {
-    group: PropTypes.object,
+    groupId: PropTypes.string,
+    eventId: PropTypes.string,
     items: PropTypes.array,
 };

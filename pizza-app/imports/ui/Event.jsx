@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
-import {Events} from '../api/events.js';
 
 export class Event extends Component{
     takePart(){
@@ -14,6 +13,13 @@ export class Event extends Component{
     handleChooseItems(){
         FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
                                             eventId:this.props.event._id})
+    }
+    renderOrders(){
+        if(this.props.events.order){
+            this.props.event.orders.map((order) => {
+                
+            })
+        }
     }
     renderButton() {
         let participantUserIds = [];

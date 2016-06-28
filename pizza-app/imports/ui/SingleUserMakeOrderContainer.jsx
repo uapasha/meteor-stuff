@@ -7,14 +7,14 @@ import {SingleUserMakeOrder} from './SingleUserMakeOrder.jsx';
 
 
 export default SingleUserMakeOrderContainer = createContainer(() => {
-    const id = FlowRouter.getParam("groupId");
-    console.log(id);
-    Meteor.subscribe('groupForEvent', id);
-    const group = Groups.find({'_id':id}).fetch()[0];
-    console.log(group);
+    const groupId = FlowRouter.getParam("groupId");
+    const eventId = FlowRouter.getParam('groupId');
+    Meteor.subscribe('groupForEvent', groupId);
+    const group = Groups.find({'_id':groupId}).fetch()[0];
     let groupNow = !!group ? group : {};
     return {
-        group: groupNow,
+        groupId: groupId,
+        eventId: eventId,
         items: !!groupNow.items ? groupNow.items : []
     };
 }, SingleUserMakeOrder);

@@ -24,6 +24,7 @@ Meteor.methods({
         if (!Creator){
             throw new Meteor.Error('Only group Creator can create Events');
         }
+        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().username.profile.name;
         Events.insert({date: eventDateTime,
             status: 'new',
             group: {
@@ -31,11 +32,33 @@ Meteor.methods({
                 _id: groupId},
             items: eventItems,
             eventCreatorId: this.userId,
-            eventCreatorName: Meteor.user().username,
-            participants: [{name: Meteor.user().username, _id: this.userId}],
+            eventCreatorName: userName,
+            participants: [{name: userName, _id: this.userId}],
             refused: [],
 
     });
+    },
+    
+    'events.placeOrder'(eventId, orderItems, totalSum){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        check(eventId, String);
+        check(orderItems, String);
+        check(totalSum, Number);
+        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().username.profile.name;
+        Events.update({
+            _id:eventId
+        }, {
+            $addToSet: {
+                orders: {
+                    user_name: userName,
+                    user_id:this.userId, 
+                    order: orderItems,
+                    total_sum: totalSum
+                }
+            }
+        })
     },
     
     'events.addParticipant'(eventId){
