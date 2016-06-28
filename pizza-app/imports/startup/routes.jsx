@@ -54,3 +54,9 @@ FlowRouter.route('/events/:groupId/:eventId',{
     }
 });
 
+// FlowRouter.route('/event/:eventId/yourOrder', {
+//     name:'yourOrder',
+//     action(params){
+//         mount(OrderContainer, {params: {eventId: params.eventId}})
+//     }
+// });

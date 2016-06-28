@@ -9,21 +9,21 @@ export class CreateEvent extends Component {
         super(props);
         this.state = {};
     }
-    renderItems(){
-        if (this.props.items.length > 0) {
-            return <div class="eventMenu">
-                <div><h1>Selected Items</h1></div>
-                {this.props.items.map((item) => {
-                        return <EventItem key={'itemNode_' + item._id}
-                                          item={item}
-                                          totalAmount={this.totalAmount.bind(this)}/>
-                    }
-                )}
-            </div>
-        } else {
-            return <div>No items selected</div>
-        }
-    }
+    // renderItems(){
+    //     if (this.props.items.length > 0) {
+    //         return <div class="eventMenu">
+    //             <div><h1>Selected Items</h1></div>
+    //             {this.props.items.map((item) => {
+    //                     return <EventItem key={'itemNode_' + item._id}
+    //                                       item={item}
+    //                                       totalAmount={this.totalAmount.bind(this)}/>
+    //                 }
+    //             )}
+    //         </div>
+    //     } else {
+    //         return <div>No items selected</div>
+    //     }
+    // }
 
     getDefaultDate(){
             const now = new Date();
@@ -48,15 +48,15 @@ export class CreateEvent extends Component {
         const eventTime = ReactDOM.findDOMNode(this.refs.eventTime).value.trim();
 
         const eventDateTime = new Date(Date.parse(eventDate + 'T' + eventTime + '+03:00'));
-        const eventItems = [];
-        this.props.items.map((item) => {
-            eventItems.push({id: item._id,
-                                name: item.name,
-                                price: item.price,
-                                amount: this.state[item._id] ? this.state[item._id] : 0})
-        });
+        // const eventItems = [];
+        // this.props.items.map((item) => {
+        //     eventItems.push({id: item._id,
+        //                         name: item.name,
+        //                         price: item.price,
+        //                         amount: this.state[item._id] ? this.state[item._id] : 0})
+        // });
 
-        Meteor.call('events.create', eventDateTime, this.props.group.name, this.props.group._id, eventItems);
+        Meteor.call('events.create', eventDateTime, this.props.group.name, this.props.group._id,);
         // console.log(Events.find().fetch());
         // if (Events.find().fetch()) {
         FlowRouter.go('singleGroup', {id: this.props.group._id});
@@ -93,7 +93,6 @@ export class CreateEvent extends Component {
                         <input ref="eventTime" type="time" defaultValue={this.getDefaultTime()} name="selectDate"
                         step ='300.0'/>
                     </label>
-                    {this.renderItems()}
                     <h1>Total sum is {this.getTotalSum()}</h1>
                     <input type="submit" value ='Create Event'/>
                 </fieldset>

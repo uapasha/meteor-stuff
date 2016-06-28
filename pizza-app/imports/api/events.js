@@ -8,15 +8,29 @@ export const Events = new Mongo.Collection('events');
 if (Meteor.isServer){
     Meteor.publish('events', function eventsPublication(groupId) {
         return Events.find({'group._id':groupId})
-    })
+    });
+
 }
+// if(Meteor.isServet){
+//
+//     Meteor.publish('events.singleOrder', function(eventId){
+//         return Events.findOne({
+//             _id: eventId
+//         }, {
+//             _id: 0,
+//             orders: {
+//                 $elemMatch:{user_id: this.user_id}
+//             }})
+//     });
+// }
+
+
 
 Meteor.methods({
-    'events.create'(eventDateTime, groupName, groupId, eventItems){
+    'events.create'(eventDateTime, groupName, groupId){
         check(eventDateTime, Date);
         check(groupName, String);
         check(groupId, String);
-        check(eventItems, Array);
         if (! this.userId){
             throw new Meteor.Error('not-authorized');
         }
@@ -24,17 +38,17 @@ Meteor.methods({
         if (!Creator){
             throw new Meteor.Error('Only group Creator can create Events');
         }
-        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().username.profile.name;
+        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().profile.name;
         Events.insert({date: eventDateTime,
             status: 'new',
             group: {
                 name: groupName,
                 _id: groupId},
-            items: eventItems,
             eventCreatorId: this.userId,
             eventCreatorName: userName,
-            participants: [{name: userName, _id: this.userId}],
+            participants: [],
             refused: [],
+            orders: []
 
     });
     },
@@ -44,9 +58,10 @@ Meteor.methods({
             throw new Meteor.Error('not-authorized');
         }
         check(eventId, String);
-        check(orderItems, String);
+        check(orderItems, Array);
         check(totalSum, Number);
-        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().username.profile.name;
+        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().profile.name;
+        console.log(Events.find({_id:eventId}).fetch());
         Events.update({
             _id:eventId
         }, {
@@ -60,7 +75,26 @@ Meteor.methods({
             }
         })
     },
-    
+
+    'events.removeOrder'(eventId){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        check(eventId, String);
+        Events.update(
+            {_id: eventId},
+            { $pull: { orders: { user_id: this.userId }}},
+            { multi: true }
+        );
+    },
+
+    'events.removeGroupEvents'(groupId){
+        if (! this.userId){
+            throw new Meteor.Error('not-authorized');
+        }
+        Events.remove({'group._Id': groupId});
+    },
+
     'events.addParticipant'(eventId){
         if (! this.userId){
             throw new Meteor.Error('not-authorized');

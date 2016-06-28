@@ -30,16 +30,22 @@ export class SingleUserMakeOrder extends Component {
 
     handleSubmit(event){
         event.preventDefault();
-        const eventItems = [];
+        let orderItems = [];
+        console.log(this.props.items);
         this.props.items.map((item) => {
-            eventItems.push({id: item._id,
-                name: item.name,
-                price: item.price,
-                amount: this.state[item._id] ? this.state[item._id] : 0})
+            if (this.state[item._id] > 0) {
+                orderItems.push({
+                    _id: item._id,
+                    name: item.name,
+                    price: item.price,
+                    amount: this.state[item._id] ? this.state[item._id] : 0
+                })
+            }
         });
+        console.log(orderItems);
 
         const totalSum = this.getTotalSum.call(this);
-        Meteor.call('events.placeOrder', this.props.eventId, eventItems, totalSum);
+        Meteor.call('events.placeOrder', this.props.eventId, orderItems, totalSum);
         FlowRouter.go('singleGroup', {id: this.props.groupId});
     }
     getTotalSum() {

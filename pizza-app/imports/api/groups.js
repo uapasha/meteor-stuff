@@ -41,7 +41,7 @@ Meteor.methods({
 
     'groups.deleteItem'(groupId, itemId){
         check(groupId, String);
-        //check(item, String);
+        check(itemId, String);
 
         // make user user is logged in
         if (!this.userId) {
@@ -77,10 +77,11 @@ Meteor.methods({
         check(groupId, String);
         const group = Groups.findOne(groupId);
         if (group.creatorId && group.creatorId !== this.userId) {
-            // If the task is private, make sure only the owner can check it off
+            // only group creator can delete group
             throw new Meteor.Error('not-authorized');
         }
         Groups.remove({_id:groupId});
+        Meteor.call('events.removeGroupEvents', groupId);
     },
 
     'groups.createGroup'(groupName, imgUrl){
@@ -89,13 +90,14 @@ Meteor.methods({
         }
         check(groupName, String);
         check(imgUrl, Match.Maybe(String));
+        const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().profile.name;
         Groups.insert({
             name:groupName,
             createdAt: new Date(),
             img: imgUrl,
             creatorId: Meteor.userId(),
-            creatorName: Meteor.user().username,
-            users: [{name:Meteor.user().username, id:Meteor.userId()}]
+            creatorName: userName,
+            users: [{name:userName, id:Meteor.userId()}]
         });
     },
 

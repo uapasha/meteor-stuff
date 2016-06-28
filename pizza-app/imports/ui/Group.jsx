@@ -1,5 +1,5 @@
 import React, { Component, PropTypes} from 'react';
-import MenuItems from './GroupItems.jsx';
+import GroupItems from './GroupItems.jsx';
 import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -96,7 +96,7 @@ class Group extends Component {
 
             <div className="group-information">
                 <li>{this.props.group.name}</li>
-                    <MenuItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/>
+                    <GroupItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/>
                 <img src={this.props.group.img} alt={this.props.group.name + ' logo'}/>
                 {this.getUsers()}
                 {this.addUser()}

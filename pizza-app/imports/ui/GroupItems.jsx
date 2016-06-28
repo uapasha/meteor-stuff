@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import {PizzaItem} from './PizzaItem.jsx'
 import {Meteor} from 'meteor/meteor';
 
-class MenuItems extends Component {
+class GroupItems extends Component {
     
     addNewItem(){
         return (
@@ -38,43 +38,44 @@ class MenuItems extends Component {
         const newItem = Items.findOne({_id:newPizzaItemId});
         Meteor.call('groups.addItem', this.props.currentGroupId, newItem);
     }
-
+    renderItems(){
+        return this.props.groupItems.map((item)=> {
+                if (this.props.loading){
+                    return <p key={item._id}>The items are loading</p>
+                } else {
+                    return <div key={item._id}>
+                        <PizzaItem
+                            item={item}/>
+                        <button className="delete" onClick={this.deleteItem.bind(this)} name={item._id}>
+                            Remove Item
+                            &times;
+                        </button>
+                    </div>
+                }
+            }
+        )
+    }
     render() {
         if (this.props.groupItems && this.props.groupItems.length > 0) {
             return <div className='ItemsBox'>
-                {this.props.groupItems.map((item)=> {
-                        if (this.props.loading){
-                            return <p key={item._id}>The items are loading</p>
-                        } else {
-                            return <div key={item._id}>
-                                <PizzaItem
-                                    item={item}/>
-                                <button className="delete" onClick={this.deleteItem.bind(this)} name={item._id}>
-                                    Remove Item
-                                    &times;
-                                </button>
-                            </div>
-                        }
-                    }
-                )}
-                <h1>Total:
-                    {this.props.groupItems.reduce((sum, item) =>
-                        (item.price + sum), 0)}
-                </h1>
+                <h1>Group Items</h1>
+                {this.renderItems()}
                 <div>{this.addNewItem()}</div>
                 <a href={FlowRouter.path('menu')}>Edit menu</a>
+                <hr/>
             </div>
         } else{
             return <div>
                     <p>...No items available...</p>
                     <div>{this.addNewItem()}</div>
                     <a href={FlowRouter.path('menu')}>Edit menu</a>
+                    <hr/>
                 </div>
         }
     }
 }
 
-MenuItems.propTypes = {
+GroupItems.propTypes = {
     items: PropTypes.array.isRequired
 };
 
@@ -87,4 +88,4 @@ export default createContainer(() => {
         loading: loading,
         items: itemsExists ? items : []
     }
-}, MenuItems);
+}, GroupItems);

@@ -1,9 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import {Groups} from '../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
+import OrderContainer from './OrderContainer.jsx';
 
 export class Event extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            showOrder: false
+        }
+    }
     takePart(){
         Meteor.call('events.addParticipant', this.props.event._id);
     }
@@ -14,30 +20,58 @@ export class Event extends Component{
         FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
                                             eventId:this.props.event._id})
     }
-    renderOrders(){
-        if(this.props.events.order){
-            this.props.event.orders.map((order) => {
-                
-            })
+    changeOrder(){
+        let sure = confirm('This will delete your previous order. Are you sure?');
+        if (sure) {
+            Meteor.call('events.removeOrder', this.props.event._id);
+            FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
+                eventId:this.props.event._id})
         }
     }
-    renderButton() {
+    showOrder(){
+        this.setState({
+            showOrder: !this.state.showOrder
+        })       
+    }
+    renderOrder(){
+        if (this.state.showOrder){
+            return <OrderContainer params = {{orders:this.props.event.orders}}/>
+        }
+    }
+    renderButtons() {
+        const userId = Meteor.userId();
+
         let participantUserIds = [];
         this.props.event.participants.forEach((user) => {
             participantUserIds.push(user._id);
         });
+
         let refusedUserIds = [];
         this.props.event.refused.forEach((user) => {
             refusedUserIds.push(user._id);
         });
-        if (refusedUserIds.indexOf(Meteor.userId()) !==-1) {
+
+        let orderedUser = [];
+        this.props.event.orders.forEach((order) => {
+            orderedUser.push(order.user_id)
+        });
+
+        if (refusedUserIds.indexOf(userId) !==-1) {
             return <p>Sorry, you had refused to participate</p>
-        } else if(participantUserIds.indexOf(Meteor.userId()) === -1 ){
+
+        } else if(participantUserIds.indexOf(userId) === -1 ){
             return <div>
                 <button onClick={this.takePart.bind(this)}>Take part</button>
                 <button onClick={this.declineEvent.bind(this)}>Decline</button>
             </div>
-        } else return <button onClick={this.handleChooseItems.bind(this)}>
+
+        } else if(orderedUser.indexOf(userId) !== -1){
+            return<div>
+                    <button onClick={this.showOrder.bind(this)}>{this.state.showOrder ? 'Hide your order':'See your order'}</button>
+                    <button onClick={this.changeOrder.bind(this)}>Change order</button>
+                </div>
+
+        }else return <button onClick={this.handleChooseItems.bind(this)}>
             Choose items
         </button>
     }
@@ -46,19 +80,15 @@ export class Event extends Component{
         return <div>
             <p>Event Date: {this.props.event.date.toISOString()}</p>
             <p>Group: {this.props.event.group.name}</p>
-            <p>Food:</p>
-            <ul>
-            {this.props.event.items.map((item) => {
-                return <li key={item.id}>{item.name}: {item.amount}</li>
-            })}
-            </ul>
             <p>Participants:</p>
             <ul>
                 {this.props.event.participants.map((user) => {
                     return <li key = {'user_' + user._id}>{user.name}</li>
                 })}
             </ul>
-            {this.renderButton()}
+            {this.renderOrder()}
+
+            {this.props.event.status === 'new' ? this.renderButtons() : ''}
         </div>
     }
 }
