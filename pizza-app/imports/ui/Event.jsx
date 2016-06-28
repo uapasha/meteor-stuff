@@ -94,6 +94,10 @@ export class Event extends Component{
         Meteor.call('events.changeEventStatus', this.props.event._id, newStatus)
     }
 
+    handleEmailSent(){
+        Meteor.call('events.sendEmailNotification', this.props.event._id);
+    }
+
     renderStatusOptions(){
         if (this.props.event.eventCreatorId == Meteor.userId()){
             return<fieldset>
@@ -128,6 +132,7 @@ export class Event extends Component{
             {this.props.event.status === 'ordering' ? <p>Orders are completed. Delivery will be soon</p> : ''}
             {this.props.event.status === 'delivered' ? <p>Event has completed. How was the pizza??</p> : ''}
             {this.renderCancelEventButton()}
+            <button onClick={this.handleEmailSent.bind(this)}>Send Email</button>
         </div>
     }
 }

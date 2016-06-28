@@ -2,6 +2,7 @@ import {Meteor} from 'meteor/meteor';
 import {Mongo} from 'meteor/mongo';
 import {check} from 'meteor/check'
 import {Groups} from './groups.js';
+import { Email } from 'meteor/email'
 
 export const Events = new Mongo.Collection('events');
 
@@ -94,15 +95,13 @@ Meteor.methods({
 
     'events.checkEventStatus'(eventId){
         check(eventId, String);
-        // console.log(eventId);
         const event = Events.findOne({_id:eventId});
-        // console.log(event);
         const numberOrders = event.orders.length;
         const numberRefused = event.refused.length;
         const numberInGroup = Groups.findOne({_id: event.group._id}).users.length;
-        console.log(numberOrders, numberRefused, numberInGroup);
         if (numberOrders + numberRefused === numberInGroup){
-            Events.update({_id: eventId},  {$set:{status: 'ordering'}})
+            Events.update({_id: eventId},  {$set:{status: 'ordering'}});
+            Meteor.call('events.sendEmailNotification', eventId)
         }
     },
 
@@ -166,6 +165,35 @@ Meteor.methods({
                     _id:this.userId
                 }
             }
+        });
+    },
+    'events.sendEmailNotification'(eventId) {
+        check(eventId, String);
+        
+        const event = Events.findOne({_id:eventId});
+        const participants = event.participants;
+        participants.forEach((participant) => {
+            const user = Meteor.users.findOne({_id:participant._id});
+            const to = user.email ? user.email : 'admin@pizza-app.com';
+            const from = 'uapasha@ukr.net';
+            const subject = 'Your order for event ' + event.date.toDateString('en-US');
+            let order = Events.findOne({
+                                    _id: eventId
+                                }, {
+                                    _id: 0,
+                                    orders: {
+                                        $elemMatch:{user_id: user._id}
+                                    }});
+            const totalAmount = order.orders[0].total_sum;
+            order = order.orders[0].order;
+
+            const text = `Your order for the event ${event.date.toDateString('en-US')} \n\nYou have to pay: ${totalAmount}`;
+            Email.send({
+                to: to,
+                from: from,
+                subject: subject,
+                text: text
+            });
         });
     }
     
