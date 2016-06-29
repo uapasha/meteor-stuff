@@ -47,7 +47,7 @@ export class Group extends Component {
             </div>
 
         } else {
-            return<div> <p>There are no events yet</p> </div>
+            return<div> <p className='log-in-warning'>There are no events yet</p> </div>
             }
         }
 
@@ -82,7 +82,7 @@ export class Group extends Component {
                     &times;
                 </button>
 
-            } else return <p>Only group creator can remove group</p>
+            } else return <p className='log-in-warning'>Only group creator can remove group</p>
 
         } else {
             return<button className="deleteGroup" onClick={this.deleteGroup.bind(this)}>
@@ -98,7 +98,7 @@ export class Group extends Component {
                 Create Event
             </button>
 
-        } else return <p>Only group creator can create Event</p>
+        } else return <p className='log-in-warning'>Only group creator can create Event</p>
     }
 
     render(){
@@ -110,17 +110,17 @@ export class Group extends Component {
             <hr/>
             {Meteor.userId() ?
                 <GroupItemsContainer groupItems={this.props.group.items} currentGroupId={this.props.group._id}/> :
-                <div><p>Log in to see group items</p></div>}
+                <div><p className='log-in-warning'>Log in to see group items</p></div>}
 
             <hr/>
             <h1>Users:</h1>
             {Meteor.userId() ?
                 this.renderUsers() :
-                <div class="log-in-warning"><p>Log in to see users</p></div>}
+                <div className="log-in-warning"><p>Log in to see users</p></div>}
 
             {Meteor.userId() ?
                 this.renderAddUser() :
-                <div class="log-in-warning"><p>Log in to add users</p></div>}
+                <div className="log-in-warning"><p>Log in to add users</p></div>}
 
 
             <hr/>

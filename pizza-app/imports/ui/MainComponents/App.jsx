@@ -26,7 +26,9 @@ export class App extends Component {
                 </button>
                 {this.state.showEvents ? this.renderEvents() : ''}
                 </section>
-        } else return <p>If You ever create any events You'll see them here</p>
+        } else return <p className='log-in-warning'>
+                If You ever create any events You'll see them here
+            </p>
     }
     //// state change functions ////
     toggleShowEvents(){
@@ -55,11 +57,14 @@ export class App extends Component {
 
         // filter groups without items if hideEmpty activated
         if(this.state.hideEmpty){
-            filteredGroups = filteredGroups.filter(group => !!group.items && group.items.length > 0);
+            filteredGroups = filteredGroups.filter(group => !!group.items && 
+                                                        group.items.length > 0);
         }
 
         if(filteredGroups.length === 0){
-            return <p>No groups available. Try creating new one</p>
+            return <p className='log-in-warning'>
+                    No groups available. Try creating new one
+                </p>
         }
 
         return filteredGroups.map((group) => (

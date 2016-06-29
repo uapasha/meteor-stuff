@@ -24,10 +24,10 @@ export class PizzaItem extends Component{
     }
 
     render(){
-        return <div class="individual-item">
+        return <div>
                 <p>
-                    {this.props.item.name}:
-                    <strong>{this.props.item.price}</strong>
+                    {this.props.item.name}: 
+                    <strong>{this.props.item.price} UAH</strong>
                 </p>
 
                 {this.renderItemChanging()}

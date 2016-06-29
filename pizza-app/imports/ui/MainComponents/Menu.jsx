@@ -65,10 +65,11 @@ export class Menu extends Component {
 
         } else if (this.props.items.length > 0) {
 
-            return <div className='ItemsBox'>{
+            return <div className='menu-items-box'>{
                 this.props.items.map((item)=> {
                     
-                    return<div key={'menuItem_' + item._id}>
+                    return<div  key={'menuItem_' + item._id} 
+                                className="menu-individual-item">
                             <PizzaItem item={item}/>
                             <button
                                 name={'delete_' + item._id}

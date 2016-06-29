@@ -43,7 +43,7 @@ export class GroupItems extends Component {
                 if (this.props.loading){
                     return <p key={item._id}>The items are loading</p>
                 } else {
-                    return <div key={item._id}>
+                    return <div className='group-individual-item' key={item._id}>
                         <PizzaItem item={item}/>
                         <button className="delete" 
                                 onClick={this.deleteItem.bind(this)} 
@@ -57,17 +57,19 @@ export class GroupItems extends Component {
     }
     render() {
         if (this.props.groupItems && this.props.groupItems.length > 0) {
-            return <div className='ItemsBox'>
+            return <div className='group-items-box'>
                 <h1>Group Items</h1>
                 {this.renderItems()}
-                <div>{this.renderAddNewItem()}</div>
+                <div className='group-add-item'>{this.renderAddNewItem()}</div>
                 <a href={FlowRouter.path('menu')}>Edit menu</a>
                 <hr/>
             </div>
         } else{
-            return <div className='ItemsBox'>
+            return <div className='group-items-box'>
                     <p>...No items available...</p>
-                    <div>{this.renderAddNewItem()}</div>
+                    <div className='group-add-item'>
+                        {this.renderAddNewItem()}
+                    </div>
                     <a href={FlowRouter.path('menu')}>Edit menu</a>
                     <hr/>
                 </div>

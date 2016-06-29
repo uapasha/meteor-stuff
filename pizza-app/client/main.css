@@ -65,6 +65,10 @@ body{
     color: #747704;
 }
 
+fieldset{
+    margin-bottom: 10px;
+}
+
 hr {
     border: 0;
     height: 1px;
@@ -102,13 +106,50 @@ p, h1 {
     padding: 10px;
     border: 1px solid #747704;
     border-radius: 10px;
-    flex: 1;
+    flex: 1 40%
 }
 .events-list{
     display: flex;
     flex-wrap: wrap;
 }
 
-.events-list > h1 {
+.events-list > h1, button {
         flex: 1 100%
+}
+
+
+
+.group-individual-item{
+    flex: 1 33%
+}
+
+.group-items-box{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.group-items-box > h1 {
+    flex: 1 100%;
+}
+
+.group-add-item {
+    flex: 1 100%;
+}
+
+.menu-items-box{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #747704;
+    border-radius: 10px;
+}
+
+.menu-individual-item {
+    flex:1 30%;
+    margin-top: 10px;
+}
+
+.log-in-warning {
+    color: #77043A;
 }
