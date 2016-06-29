@@ -3,8 +3,8 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import {Meteor} from 'meteor/meteor'
 import ReactDOM from 'react-dom';
 
-import GroupItemsContainer from './containers/GroupItemsContainer.jsx';
-import Users from './Users.jsx'
+import GroupItemsContainer from '../containers/GroupItemsContainer.jsx';
+import Users from '../SmallComponents/Users.jsx'
 import {Event} from './Event.jsx'
 
 export class Group extends Component {

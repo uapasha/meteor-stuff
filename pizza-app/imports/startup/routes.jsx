@@ -6,10 +6,10 @@ import { mount } from 'react-mounter';
 import AppContainer from '../ui/containers/AppContainer.jsx';
 
 import GroupContainer from '../ui/containers/GroupContainer.jsx';
-import Users from '../ui/Users.jsx';
+import Users from '../ui/SmallComponents/Users.jsx';
 import CreateEventContainer from '../ui/containers/CreateEventContainer.jsx';
 import MenuContainer from '../ui/containers/MenuContainer.jsx';
-import SingleUserMakeOrderContainer from '../ui/SingleUserMakeOrderContainer.jsx'
+import SingleUserMakeOrderContainer from '../ui/containers/SingleUserMakeOrderContainer.jsx'
 
 
 FlowRouter.route('/',{

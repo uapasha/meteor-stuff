@@ -2,7 +2,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
 import {Items} from '../../api/items.js';
 
-import {Menu} from '../Menu.jsx';
+import {Menu} from '../MainComponents/Menu.jsx';
 
 
 export default MenuContainer = createContainer(() => {

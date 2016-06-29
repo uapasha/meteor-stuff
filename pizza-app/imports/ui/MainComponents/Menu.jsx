@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {Meteor} from 'meteor/meteor';
 
-import {PizzaItem} from './PizzaItem.jsx'
+import {PizzaItem} from '../SmallComponents/PizzaItem.jsx'
 
 
 export class Menu extends Component {

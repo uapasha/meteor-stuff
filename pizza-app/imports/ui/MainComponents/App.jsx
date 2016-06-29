@@ -1,8 +1,8 @@
 import  React, { Component, PropTypes } from 'react';``
-import AccountsUIWrapper from './AccountsUIWrapper.jsx';
+import AccountsUIWrapper from '../SmallComponents/AccountsUIWrapper.jsx';
 
-import {GroupSummary} from './GroupSummary.jsx';
-import {CreateGroup} from './CreateGroup.jsx'
+import {GroupSummary} from '../SmallComponents/GroupSummary.jsx';
+import {CreateGroup} from '../SmallComponents/CreateGroup.jsx'
 import {Event} from './Event.jsx'
 
 export class App extends Component {

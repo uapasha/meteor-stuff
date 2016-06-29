@@ -1,7 +1,7 @@
 import { createContainer } from 'meteor/react-meteor-data';
 import {Events} from '../../api/events.js';
 import {Groups} from '../../api/groups.js';
-import {App} from '../App.jsx'
+import {App} from '../MainComponents/App.jsx'
 import {Meteor} from 'meteor/meteor';
 
 export default AppContainer = createContainer(() => {

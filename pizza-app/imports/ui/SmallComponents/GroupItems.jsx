@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import {Items} from '../api/items.js';
+import {Items} from '../../api/items.js';
 
 import {PizzaItem} from './PizzaItem.jsx'
 import {Meteor} from 'meteor/meteor';

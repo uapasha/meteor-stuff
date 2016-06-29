@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
-import OrderContainer from './OrderContainer.jsx';
+import OrderContainer from '../containers/OrderContainer.jsx';
 import ReactDOM from 'react-dom';
 
 export class Event extends Component{

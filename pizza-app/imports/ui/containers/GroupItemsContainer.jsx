@@ -2,7 +2,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
 import {Items} from '../../api/items.js';
 
-import {GroupItems} from '../GroupItems.jsx';
+import {GroupItems} from '../SmallComponents/GroupItems.jsx';
 
 export default GroupItemsContainer = createContainer(() => {
     const itemsHandle = Meteor.subscribe('items');

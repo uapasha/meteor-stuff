@@ -3,7 +3,7 @@ import {Groups} from '../../api/groups.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import {Meteor} from 'meteor/meteor'
-import {CreateEvent} from '../CreateEvent.jsx';
+import {CreateEvent} from '../MainComponents/CreateEvent.jsx';
 
 
 export default CreateEventContainer = createContainer(() => {
