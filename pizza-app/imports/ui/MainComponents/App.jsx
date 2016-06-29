@@ -19,7 +19,7 @@ export class App extends Component {
         // handles logic of rendering events components
         if (this.props.events && this.props.events.length > 0){
             // if there are any events that user created - show button
-            return <section class = 'events-list'>
+            return <section className = 'events-list'>
                 <h1>Events that you created:</h1>
                 <button onClick={this.toggleShowEvents.bind(this)}>
                     {this.state.showEvents ? 'Hide events' : 'Show events'}

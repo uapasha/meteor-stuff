@@ -68,7 +68,7 @@ export class Event extends Component{
         const userId = Meteor.userId();
 
         if (!userId){
-            return <div class="log-in-warning">
+            return <div className="log-in-warning">
                 <p>Log in to take part in the event</p>
             </div>
         }
@@ -147,7 +147,7 @@ export class Event extends Component{
     }
 
     render (){
-        return <div class="event-information">
+        return <div className="event-information">
 
             <p>Event Date: {this.props.event.date.toLocaleString('en-US')}</p>
 
