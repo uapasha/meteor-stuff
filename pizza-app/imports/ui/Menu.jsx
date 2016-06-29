@@ -1,16 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
+
 import {PizzaItem} from './PizzaItem.jsx'
-import {Items} from '../api/items.js';
+
 
 export class Menu extends Component {
     insertItem(event) {
         event.preventDefault();
+
         const name = ReactDOM.findDOMNode(this.refs.newItemName).value.trim();
         const price = parseInt(ReactDOM.findDOMNode(this.refs.newItemPrice).value.trim());
+
         Meteor.call('items.create', name, price);
+
+        //clear inputs
         ReactDOM.findDOMNode(this.refs.newItemPrice).value = '';
         ReactDOM.findDOMNode(this.refs.newItemName).value = '';
 
@@ -18,16 +22,17 @@ export class Menu extends Component {
 
     deleteItem(event){
         const itemId = event.target.name.split('_')[1];
-        //console.log(itemId);
+
         const sure = confirm('This will delete item from all groups. Are you sure?');
         if (sure) Meteor.call('items.deleteItem', itemId);
     }
 
-    createNewItem() {
+    renderCreateNewItem() {
         return <fieldset>
             <legend>Create a new menu Item</legend>
             <form onSubmit={this.insertItem.bind(this)}>
-                <label for="enterName">Enter Item Name
+                <label for="enterName">
+                    Enter Item Name
                     <input
                         name="enterName"
                         type="text"
@@ -35,7 +40,8 @@ export class Menu extends Component {
                         required
                         placeholder="Enter new item name"/>
                 </label>
-                <label for="enterPrice">Enter Price
+                <label for="enterPrice">
+                    Enter Price
                     <input
                         type='number'
                         name="enterPrice"
@@ -54,10 +60,14 @@ export class Menu extends Component {
 
     renderItems(){
         if (this.props.loading){
+
             return <p>Items are being loaded</p>
+
         } else if (this.props.items.length > 0) {
+
             return <div className='ItemsBox'>{
                 this.props.items.map((item)=> {
+                    
                     return<div key={'menuItem_' + item._id}>
                             <PizzaItem item={item}/>
                             <button
@@ -74,9 +84,9 @@ export class Menu extends Component {
     }
 
     render() {
-        return<div>
+        return<div class="menu">
             {this.renderItems()}
-            {this.createNewItem()}
+            {this.renderCreateNewItem()}
         </div>
     }
 }
@@ -84,14 +94,3 @@ export class Menu extends Component {
 Menu.propTypes = {
     items: PropTypes.array.isRequired
 };
-
-export default createContainer(() => {
-    const itemsHandle = Meteor.subscribe('items');
-    const loading = !itemsHandle.ready();
-    const items = Items.find().fetch();
-    const itemsExists = !loading && !!items[0];
-    return {
-        loading: loading,
-        items: itemsExists ? items : []
-    }
-}, Menu)
