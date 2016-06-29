@@ -3,7 +3,7 @@ import React from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { mount } from 'react-mounter';
 
-import  App from '../ui/App.jsx';
+import AppContainer from '../ui/AppContainer.jsx';
 
 import Group from '../ui/Group.jsx';
 import Users from '../ui/Users.jsx';
@@ -15,7 +15,7 @@ import SingleUserMakeOrderContainer from '../ui/SingleUserMakeOrderContainer.jsx
 FlowRouter.route('/',{
     name:'home',
     action() {
-        mount(App)
+        mount(AppContainer)
     }
 });
 

@@ -63,8 +63,16 @@ Meteor.methods({
         check(eventId, String);
         check(orderItems, Array);
         check(totalSum, Number);
+        // user name depends of the type of registration
         const userName = Meteor.user().username ? Meteor.user().username : Meteor.user().profile.name;
-        console.log(Events.find({_id:eventId}).fetch());
+        //make sure previous order is deleted
+        Events.update(
+            {_id: eventId},
+            { $pull: { orders: { user_id: this.userId }}},
+            { multi: true }
+        );
+        
+        //add new order
         Events.update({
             _id:eventId
         }, {
