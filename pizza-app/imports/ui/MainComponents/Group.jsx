@@ -39,7 +39,7 @@ export class Group extends Component {
     renderEvents(){
         if (this.props.events[0]){
 
-            return <div class="eventsList">
+            return <div className="events-list">
                 <h1>Events: </h1>
                 {this.props.events.map((event) => {
                     return <Event event={event} key={'event_' + event._id}/>

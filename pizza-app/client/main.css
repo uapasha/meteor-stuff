@@ -80,6 +80,8 @@ p, h1 {
 #react-root{
     max-width:700px;
     margin: auto;
+    background-color: #F2F2E8;
+    padding: 20px;
 }
 
 .groupList {
@@ -94,4 +96,19 @@ p, h1 {
 
     border: 1px solid #747704;
     border-radius: 10px;
+}
+.event-information {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #747704;
+    border-radius: 10px;
+    flex: 1;
+}
+.events-list{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.events-list > h1 {
+        flex: 1 100%
 }
