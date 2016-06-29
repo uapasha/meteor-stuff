@@ -3,9 +3,9 @@ import React from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { mount } from 'react-mounter';
 
-import AppContainer from '../ui/AppContainer.jsx';
+import AppContainer from '../ui/containers/AppContainer.jsx';
 
-import Group from '../ui/Group.jsx';
+import GroupContainer from '../ui/containers/GroupContainer.jsx';
 import Users from '../ui/Users.jsx';
 import CreateEventContainer from '../ui/CreateEventContainer.jsx';
 import Menu from '../ui/Menu.jsx';
@@ -22,7 +22,7 @@ FlowRouter.route('/',{
 FlowRouter.route('/groups/get/:id', {
     name: 'singleGroup',
     action(params) {
-        mount(Group, {groupId: params.id})
+        mount(GroupContainer, {groupId: params.id})
     }
 });
 

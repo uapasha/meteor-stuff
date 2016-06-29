@@ -29,6 +29,7 @@ if (Meteor.isServer) {
     });
     
     Meteor.publish('users', function usersPublication() {
+        // publish only relevant information
         return Meteor.users.find({}, {_id:1, 'profile.name':1})
     });
     

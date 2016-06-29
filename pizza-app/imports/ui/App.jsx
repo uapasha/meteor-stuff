@@ -28,7 +28,7 @@ export class App extends Component {
                 </section>
         } else return <p>If You ever create any events You'll see them here</p>
     }
-
+    //// state change functions ////
     toggleShowEvents(){
         // changes state of showEvent when button in events section clicked
         this.setState({
@@ -42,6 +42,7 @@ export class App extends Component {
         });
     }
 
+    //// render functions ////
     renderEvents(){
 
         return this.props.events.map((event)=>{
@@ -87,7 +88,6 @@ export class App extends Component {
                 <hr/>
                 {this.eventsHandler()}
             </div>
-
         )
     }
 }
