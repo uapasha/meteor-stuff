@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-
 import {Meteor} from 'meteor/meteor';
 
 export class CreateGroup extends Component {
@@ -13,6 +12,7 @@ export class CreateGroup extends Component {
 
         let imgUrl = ReactDOM.findDOMNode(this.refs.imageUrl).value.trim();
 
+        // place default image if no string provided
         if (imgUrl == ''){
             imgUrl = '/default-pizza-group-image.jpg'
         }
@@ -24,6 +24,7 @@ export class CreateGroup extends Component {
 
     renderForm(){
         if (this.props.currentUser){
+
             return<fieldset>
                 <legend>Create a new Group</legend>
                 <form
@@ -42,6 +43,7 @@ export class CreateGroup extends Component {
                         type="submit" value="Add new Group"/>
                 </form>
             </fieldset>
+
         } else {
             return<div class="log-in-warning"> <p>Log in to create group</p></div>
         }
@@ -51,6 +53,5 @@ export class CreateGroup extends Component {
         return <div>
             {this.renderForm()}
         </div>
-
     }
 }

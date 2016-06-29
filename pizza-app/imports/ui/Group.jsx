@@ -92,43 +92,46 @@ export class Group extends Component {
     }
 
     renderCreateEventButton(){
-        // check if group has creator
-        if (this.props.group.creatorId) {
-            // check if user is creator
-            if (this.props.group.creatorId == Meteor.userId()) {
+        if (Meteor.userId() && this.props.group.creatorId == Meteor.userId()) {
 
-                return <button onClick={this.goCreateEvent.bind(this)}>
-                    Create Event
-                </button>
+            return <button onClick={this.goCreateEvent.bind(this)}>
+                Create Event
+            </button>
 
-            } else return <p>Only group creator can create Event</p>
-
-        } else return <button onClick={this.goCreateEvent.bind(this)}>
-            Create Event
-        </button>
+        } else return <p>Only group creator can create Event</p>
     }
 
     render(){
         return <div className="group-information">
 
-                <h1>Group that is called: {this.props.group.name}</h1>
-                <img src={this.props.group.img} alt={this.props.group.name + ' logo'}/>
+            <h1>Group that is called: {this.props.group.name}</h1>
+            <img src={this.props.group.img} alt={this.props.group.name + ' logo'}/>
 
-                <hr/>
-                <GroupItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/>
+            <hr/>
+            {Meteor.userId() ?
+                <GroupItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/> :
+                <div><p>Log in to see group items</p></div>}
 
-                <hr/>
-                <h1>Users:</h1>
-                {this.renderUsers()}
-                {this.renderAddUser()}
+            <hr/>
+            <h1>Users:</h1>
+            {Meteor.userId() ?
+                this.renderUsers() :
+                <div class="log-in-warning"><p>Log in to see users</p></div>}
 
-                <hr/>
-                {this.renderEvents()}
-                {this.renderCreateEventButton()}
+            {Meteor.userId() ?
+                this.renderAddUser() :
+                <div class="log-in-warning"><p>Log in to add users</p></div>}
+            }
 
-                <hr/>
-                {this.renderRemoveButton()}
-                <button onClick={()=>FlowRouter.go('home')}>Go home</button>
+            <hr/>
+            {this.renderEvents()}
+            
+            <hr/>
+            {this.renderCreateEventButton()}
+
+            <hr/>
+            {this.renderRemoveButton()}
+            <button onClick={()=>FlowRouter.go('home')}>Go home</button>
         </div>
     }
 }

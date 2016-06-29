@@ -18,12 +18,14 @@ if (Meteor.isServer) {
     
     Meteor.publish('groupsForUser', function (){
         const CurrentUserId = this.userId;
-        return Groups.find({
+        // get group that user is participator of or
+        // that do not have any users (generated at start up)
+        return Groups.find({$or: [{
             users: {
                 $elemMatch: {
                     id: CurrentUserId
                 }
-            }
+            }}, {users : {$exists : false }}]
         });
         
     });

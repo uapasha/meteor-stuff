@@ -7,7 +7,7 @@ import AppContainer from '../ui/containers/AppContainer.jsx';
 
 import GroupContainer from '../ui/containers/GroupContainer.jsx';
 import Users from '../ui/Users.jsx';
-import CreateEventContainer from '../ui/CreateEventContainer.jsx';
+import CreateEventContainer from '../ui/containers/CreateEventContainer.jsx';
 import Menu from '../ui/Menu.jsx';
 import SingleUserMakeOrderContainer from '../ui/SingleUserMakeOrderContainer.jsx'
 

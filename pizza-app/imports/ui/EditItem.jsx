@@ -1,18 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import {Items} from '../api/items.js';
-import { createContainer } from 'meteor/react-meteor-data';
-import {PizzaItem} from './PizzaItem.jsx'
 import {Meteor} from 'meteor/meteor';
 
 export class EditItem extends Component {
 
     insertItem(event) {
         event.preventDefault();
+
         const name = ReactDOM.findDOMNode(this.refs.newItemName).value.trim();
         const price = parseInt(ReactDOM.findDOMNode(this.refs.newItemPrice).value.trim());
-        console.log(name);
+
         Meteor.call('items.update', this.props.item._id, name, price);
+
+        //clean inputs
         ReactDOM.findDOMNode(this.refs.newItemPrice).value = '';
         ReactDOM.findDOMNode(this.refs.newItemName).value = '';
 
