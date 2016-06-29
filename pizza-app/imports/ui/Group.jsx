@@ -121,11 +121,11 @@ export class Group extends Component {
             {Meteor.userId() ?
                 this.renderAddUser() :
                 <div class="log-in-warning"><p>Log in to add users</p></div>}
-            }
+
 
             <hr/>
             {this.renderEvents()}
-            
+
             <hr/>
             {this.renderCreateEventButton()}
 

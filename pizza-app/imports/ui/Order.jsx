@@ -15,7 +15,8 @@ export class Order extends Component{
         })}</div>
     }
     render (){
-        return<div>
+        return<div class="order-information">
+            <hr/>
             {this.renderOrder()}
             <h1>Total Sum: {this.props.totalSum}</h1>
         </div>

@@ -11,84 +11,24 @@ export class Event extends Component{
             showOrder: false
         }
     }
-    takePart(){
+
+    //// handlers ////
+    handleTakePart(){
         Meteor.call('events.addParticipant', this.props.event._id);
     }
-    declineEvent(){
+
+    handleDeclineEvent(){
         Meteor.call('events.addRefused', this.props.event._id);
     }
+
     handleChooseItems(){
+        // first time making order in this event
         FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
                                             eventId:this.props.event._id})
     }
-    changeOrder(){
-        let sure = confirm('This will delete your previous order. Are you sure?');
-        if (sure) {
-            Meteor.call('events.removeOrder', this.props.event._id);
-            FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
-                eventId:this.props.event._id})
-        }
-    }
-    showOrder(){
-        this.setState({
-            showOrder: !this.state.showOrder
-        })       
-    }
-    renderOrder(){
-        if (this.state.showOrder){
-            return <OrderContainer params = {{orders:this.props.event.orders}}/>
-        }
-    }
-    renderButtons() {
-        const userId = Meteor.userId();
-        if (!userId){
-            return <div class="log-in-warning"><p>Log in to take part in the event</p></div>
-        }
-        let participantUserIds = [];
-        this.props.event.participants.forEach((user) => {
-            participantUserIds.push(user._id);
-        });
 
-        let refusedUserIds = [];
-        this.props.event.refused.forEach((user) => {
-            refusedUserIds.push(user._id);
-        });
-
-        let orderedUser = [];
-        this.props.event.orders.forEach((order) => {
-            orderedUser.push(order.user_id)
-        });
-
-        if (refusedUserIds.indexOf(userId) !==-1) {
-            return <p>Sorry, you had refused to participate</p>
-
-        } else if(participantUserIds.indexOf(userId) === -1 ){
-            return <div>
-                <button onClick={this.takePart.bind(this)}>Take part</button>
-                <button onClick={this.declineEvent.bind(this)}>Decline</button>
-            </div>
-
-        } else if(orderedUser.indexOf(userId) !== -1){
-            return<div>
-                    <button onClick={this.showOrder.bind(this)}>
-                        {this.state.showOrder ? 'Hide your order':'See your order'}
-                    </button>
-                    <button onClick={this.changeOrder.bind(this)}>Change order</button>
-                </div>
-
-        }else return <button onClick={this.handleChooseItems.bind(this)}>
-            Choose items
-        </button>
-    }
     handleCancelEvent(event, eventId){
         confirm('Are you sure you want to cancel Event?') ? Meteor.call('events.cancelEvent', eventId) : ''
-    }
-    renderCancelEventButton(){
-        if(this.props.event.eventCreatorId == Meteor.userId() && this.props.event.status !== 'delivered'){
-            return <button onClick={this.handleCancelEvent.bind(this, event, this.props.event._id)}>
-                Cancel Event
-            </button>
-        }
     }
 
     handleChangeStatus(){
@@ -103,8 +43,95 @@ export class Event extends Component{
     //      <button onClick={this.handleEmailSent`.bind(this)}>Send Email</button>
     // }
 
+    handleChangeOrder(){
+        let sure = confirm('This will delete your previous order. Are you sure?');
+        if (sure) {
+            Meteor.call('events.removeOrder', this.props.event._id);
+            FlowRouter.go('SingleUserMakeOrder', {groupId:this.props.event.group._id,
+                eventId:this.props.event._id})
+        }
+    }
+
+    handleShowOrder(){
+        this.setState({
+            showOrder: !this.state.showOrder
+        })
+    }
+    //// render functions ////
+    renderOrder(){
+        if (this.state.showOrder){
+            return <OrderContainer params = {{orders:this.props.event.orders}}/>
+        }
+    }
+
+    renderButtons() {
+        const userId = Meteor.userId();
+
+        if (!userId){
+            return <div class="log-in-warning">
+                <p>Log in to take part in the event</p>
+            </div>
+        }
+
+        // gather all group participants
+        let participantUserIds = [];
+        this.props.event.participants.forEach((user) => {
+            participantUserIds.push(user._id);
+        });
+
+        // gather all refused users
+        let refusedUserIds = [];
+        this.props.event.refused.forEach((user) => {
+            refusedUserIds.push(user._id);
+        });
+
+        // gather all users who made order
+        let orderedUser = [];
+        this.props.event.orders.forEach((order) => {
+            orderedUser.push(order.user_id)
+        });
+
+        // check your status
+        if (refusedUserIds.indexOf(userId) !==-1) {
+            // you refused to participate
+            return <p>Sorry, you had refused to participate</p>
+
+        } else if(participantUserIds.indexOf(userId) === -1 ){
+            // you have not yet made decision of participation
+            return <div>
+                <button onClick={this.handleTakePart.bind(this)}>Take part</button>
+                <button onClick={this.handleDeclineEvent.bind(this)}>Decline</button>
+            </div>
+
+        } else if(orderedUser.indexOf(userId) !== -1){
+            // you've already ordered some stuff for the event
+            return<div>
+                    <button onClick={this.handleShowOrder.bind(this)}>
+                        {this.state.showOrder ? 'Hide your order':'See your order'}
+                    </button>
+                    <button onClick={this.handleChangeOrder.bind(this)}>Change order</button>
+                </div>
+
+        }else {
+            // you confirmed participation but haven't made order yet
+            return <button onClick={this.handleChooseItems.bind(this)}>
+                Choose items
+            </button>
+        }
+    }
+
+    renderCancelEventButton(){
+        if(this.props.event.eventCreatorId == Meteor.userId() && this.props.event.status !== 'delivered'){
+            return <button onClick={this.handleCancelEvent.bind(this, event, this.props.event._id)}>
+                Cancel Event
+            </button>
+        }
+    }
+
     renderStatusOptions(){
+        // if you're event creator you can force event status change
         if (this.props.event.eventCreatorId == Meteor.userId()){
+
             return<fieldset>
                 <legend>Event Status</legend>
                 <p>Current status: <strong>{this.props.event.status}</strong></p>
@@ -120,22 +147,27 @@ export class Event extends Component{
     }
 
     render (){
-        return <div>
+        return <div class="event-information">
+
             <p>Event Date: {this.props.event.date.toLocaleString('en-US')}</p>
+
             <p>Group: {this.props.event.group.name}</p>
+
             <p>Participants:</p>
             <ul>
                 {this.props.event.participants.map((user) => {
                     return <li key = {'user_' + user._id}>{user.name}</li>
                 })}
             </ul>
+            
             {this.renderOrder()}
             <hr/>
-            {this.renderStatusOptions()}
 
             {this.props.event.status === 'new' ? this.renderButtons() : ''}
             {this.props.event.status === 'ordering' ? <p>Orders are completed. Delivery will be soon</p> : ''}
             {this.props.event.status === 'delivered' ? <p>Event has completed. How was the pizza??</p> : ''}
+            <hr/>
+            {this.renderStatusOptions()}
             {this.renderCancelEventButton()}
         </div>
     }
