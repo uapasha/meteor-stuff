@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import {Meteor} from 'meteor/meteor'
 import ReactDOM from 'react-dom';
 
-import GroupItems from './GroupItems.jsx';
+import GroupItemsContainer from './containers/GroupItemsContainer.jsx';
 import Users from './Users.jsx'
 import {Event} from './Event.jsx'
 
@@ -109,7 +109,7 @@ export class Group extends Component {
 
             <hr/>
             {Meteor.userId() ?
-                <GroupItems groupItems={this.props.group.items} currentGroupId={this.props.group._id}/> :
+                <GroupItemsContainer groupItems={this.props.group.items} currentGroupId={this.props.group._id}/> :
                 <div><p>Log in to see group items</p></div>}
 
             <hr/>

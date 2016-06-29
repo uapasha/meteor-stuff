@@ -4,7 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import {Events} from '../../api/events.js';
 import {Groups} from '../../api/groups.js';
-import {Group} from '../Group.jsx'
+import {Group} from '../Group.jsx';
 
 export default GroupContainer = createContainer(() => {
     const id = FlowRouter.getParam("id");

@@ -1,18 +1,31 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {Items} from '../api/items.js';
-import { createContainer } from 'meteor/react-meteor-data';
+
 import {PizzaItem} from './PizzaItem.jsx'
 import {Meteor} from 'meteor/meteor';
 
-class GroupItems extends Component {
-    
-    addNewItem(){
-        return (
-            <fieldset>
-                <legend>Add item</legend>
-                <form
-                    onSubmit={this.addItem.bind(this)}>
+export class GroupItems extends Component {
+
+    deleteItem(event){
+        Meteor.call('groups.deleteItem', this.props.currentGroupId, event.target.name);
+    }
+
+    addItem(event){
+        event.preventDefault();
+        
+        const newPizzaItemId = ReactDOM.findDOMNode(this.refs.selectedPizza).value.trim();
+        const newItem = Items.findOne({_id:newPizzaItemId});
+        
+        Meteor.call('groups.addItem', this.props.currentGroupId, newItem);
+    }
+    //// render functions ////
+    renderAddNewItem(){
+        // render existing items in form of options
+        return <fieldset>
+            <legend>Add item</legend>
+            <form
+                onSubmit={this.addItem.bind(this)}>
                 <select
                     name="pizza"
                     ref="selectedPizza">
@@ -21,22 +34,9 @@ class GroupItems extends Component {
                         }
                     )}
                 </select>
-                    <input type="submit" value="Add item"/>
-                </form>
-            </fieldset>
-        )
-    }
-
-    deleteItem(event){
-        //console.log(event.target.name);
-        Meteor.call('groups.deleteItem', this.props.currentGroupId, event.target.name);
-    }
-
-    addItem(event){
-        event.preventDefault();
-        const newPizzaItemId = ReactDOM.findDOMNode(this.refs.selectedPizza).value.trim();
-        const newItem = Items.findOne({_id:newPizzaItemId});
-        Meteor.call('groups.addItem', this.props.currentGroupId, newItem);
+                <input type="submit" value="Add item"/>
+            </form>
+        </fieldset>
     }
     renderItems(){
         return this.props.groupItems.map((item)=> {
@@ -44,11 +44,11 @@ class GroupItems extends Component {
                     return <p key={item._id}>The items are loading</p>
                 } else {
                     return <div key={item._id}>
-                        <PizzaItem
-                            item={item}/>
-                        <button className="delete" onClick={this.deleteItem.bind(this)} name={item._id}>
+                        <PizzaItem item={item}/>
+                        <button className="delete" 
+                                onClick={this.deleteItem.bind(this)} 
+                                name={item._id}>
                             Remove Item
-                            &times;
                         </button>
                     </div>
                 }
@@ -60,14 +60,14 @@ class GroupItems extends Component {
             return <div className='ItemsBox'>
                 <h1>Group Items</h1>
                 {this.renderItems()}
-                <div>{this.addNewItem()}</div>
+                <div>{this.renderAddNewItem()}</div>
                 <a href={FlowRouter.path('menu')}>Edit menu</a>
                 <hr/>
             </div>
         } else{
-            return <div>
+            return <div className='ItemsBox'>
                     <p>...No items available...</p>
-                    <div>{this.addNewItem()}</div>
+                    <div>{this.renderAddNewItem()}</div>
                     <a href={FlowRouter.path('menu')}>Edit menu</a>
                     <hr/>
                 </div>
@@ -76,16 +76,6 @@ class GroupItems extends Component {
 }
 
 GroupItems.propTypes = {
-    items: PropTypes.array.isRequired
+    items: PropTypes.array.isRequired,
+    loading: PropTypes.bool
 };
-
-export default createContainer(() => {
-    const itemsHandle = Meteor.subscribe('items');
-    const loading = !itemsHandle.ready();
-    const items = Items.find().fetch();
-    const itemsExists = !loading && !!items[0];
-    return {
-        loading: loading,
-        items: itemsExists ? items : []
-    }
-}, GroupItems);
